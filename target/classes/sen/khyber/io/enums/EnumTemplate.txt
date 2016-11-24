@@ -1,0 +1,55 @@
+package io.enums;
+
+import reflect.Reflect;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import lombok.Getter;
+
+public enum $className {
+    
+    $constants
+    
+    $fields
+    
+    private $className($constructorArgs) {
+        $constructorStatements
+    }
+    
+    public static Stream<$className> toStream() {
+        return Stream.of($className.values());
+    }
+    
+    public static Set<$className> toSet() {
+        Set<$className> set = new HashSet<>();
+        for ($className $instanceName : $className.values()) {
+            set.add($instanceName);
+        }
+        return set;
+    }
+    
+    public static List<$className> toList() {
+        List<$className> list = new ArrayList<>();
+        for ($className $instanceName : $className.values()) {
+            list.add($instanceName);
+        }
+        return list;
+    }
+    
+    @Override
+    public String toString() {
+        return Reflect.toString($className.class, this);
+    }
+    
+    public static void main(String[] args) throws Exception {
+        for ($className $instanceName : $className.values()) {
+            System.out.println($instanceName);
+        }
+        $className.toStream().forEach(System.out::println);
+    }
+    
+}
