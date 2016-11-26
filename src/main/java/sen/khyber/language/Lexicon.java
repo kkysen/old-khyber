@@ -2,13 +2,13 @@ package sen.khyber.language;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 
@@ -106,13 +106,9 @@ public class Lexicon {
     }
     
     public List<String> matches(final String pattern) {
-        final List<String> matches = new ArrayList<>();
-        for (final String word : lexicon) {
-            if (word.matches(pattern)) {
-                matches.add(word);
-            }
-        }
-        return matches;
+        return lexicon.parallelStream()
+                .filter(s -> s.matches(pattern))
+                .collect(Collectors.toList());
     }
     
 }

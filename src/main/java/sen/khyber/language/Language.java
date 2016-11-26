@@ -4,10 +4,15 @@ import lombok.Getter;
 
 public enum Language {
     
-    ENGLISH ("English", "src/sen.khyber.language/lexicons/english.txt", "src/sen.khyber.language/lexicons/english_letter_frequencies.csv"),
-    //SPANISH ("Spanish", "src/sen.khyber.language/lexicons/spanish.txt"),
-    FRENCH ("Spanish", "src/sen.khyber.language/lexicons/french.txt", ""),
+    ENGLISH ("English", "english.txt", "english_letter_frequencies.csv"),
+    FRENCH ("Spanish", "french.txt", ""),
     ;
+    
+    private static class Constants {
+        
+        private static final String LEXICON_DIRECTORY = "src/main/java/sen/khyber/language/lexicons/";
+        
+    }
     
     private @Getter String name;
     private @Getter String lexiconPath;
@@ -15,8 +20,8 @@ public enum Language {
     
     private Language(final String name, final String lexiconPath, final String letterFrequenciesPath) {
         this.name = name;
-        this.lexiconPath = lexiconPath;
-        this.letterFrequenciesPath = letterFrequenciesPath;
+        this.lexiconPath = Constants.LEXICON_DIRECTORY + lexiconPath;
+        this.letterFrequenciesPath = Constants.LEXICON_DIRECTORY + letterFrequenciesPath;
     }
     
 }
