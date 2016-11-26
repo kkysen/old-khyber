@@ -1,0 +1,13 @@
+public String month,public int monthNumber,public int numDays,public String season
+January,1,31,Winter
+February,2,28,Winter
+March,3,31,Winter
+April,4,30,Spring
+May,5,31,Sping
+June,6,30,Spring
+July,7,31,Summer
+August,8,31,Summer
+September,9,30,Summer
+October,10,31,Fall
+November,11,30,Fall
+December,12,31,Fall
