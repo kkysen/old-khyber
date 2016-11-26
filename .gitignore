@@ -1,2 +1,10 @@
-#/target/
+*.[oa]
+*.html
+*.class
+*.log
+*.classpath
+*.project
+*.xml
+!pom.xml
+/.settings/
 /target/
