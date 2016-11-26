@@ -3,10 +3,16 @@ package sen.khyber.util.linkedMatrix;
 import java.util.List;
 import java.util.function.Supplier;
 
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <E> element type
+ */
 public class AdjacentLinkedMatrix<E> extends LinkedMatrix<E> {
     
-    public AdjacentLinkedMatrix(final List<List<E>> elementMatrix, final int height, final int width) {
+    public AdjacentLinkedMatrix(final List<List<E>> elementMatrix, final int height,
+            final int width) {
         super(elementMatrix, height, width);
     }
     

@@ -1,9 +1,16 @@
 package sen.khyber.web.drivers;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public enum WebDriverInit {
     
-    CHROME("webdriver.chrome.driver", "chromedriver.exe"), FIREFOX("webdriver.gecko.driver",
-            "geckodriver.exe"), EDGE("webdriver.edge.driver", ""), IE("webdriver.ie.driver", "");
+    CHROME("webdriver.chrome.driver", "chromedriver.exe"),
+    FIREFOX("webdriver.gecko.driver", "geckodriver.exe"),
+    EDGE("webdriver.edge.driver", "unknown"),
+    IE("webdriver.ie.driver", "unknown");
     
     private static class Constants {
         

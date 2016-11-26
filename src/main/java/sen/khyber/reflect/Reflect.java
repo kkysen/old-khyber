@@ -8,22 +8,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Reflect {
     
-    private static <T> Stream<Field> getInstanceVarsStream(Class<T> type) {
-        Stream<Field> fields = Arrays.asList(type.getDeclaredFields()).parallelStream();
-        return fields.filter(field -> ! Modifier.isStatic(field.getModifiers()))
-                     .map(field -> {
-                         field.setAccessible(true);
-                         return field;
-                     });
+    private static <T> Stream<Field> getInstanceVarsStream(final Class<T> type) {
+        final Stream<Field> fields = Arrays.asList(type.getDeclaredFields()).parallelStream();
+        return fields.filter(field -> !Modifier.isStatic(field.getModifiers()))
+                .map(field -> {
+                    field.setAccessible(true);
+                    return field;
+                });
     }
     
-    public static <T> List<Field> getInstanceVars(Class<T> type) {
+    public static <T> List<Field> getInstanceVars(final Class<T> type) {
         return getInstanceVarsStream(type).collect(Collectors.toList());
     }
     
-    public static <T> Stream<AbstractMap.SimpleImmutableEntry<String, Object>> getInstanceVarsEntries(Class<T> type, T t) {
+    public static <T> Stream<AbstractMap.SimpleImmutableEntry<String, Object>> getInstanceVarsEntries(
+            final Class<T> type, final T t) {
         return getInstanceVarsStream(type).map(field -> {
             Object val;
             try {
@@ -35,7 +41,8 @@ public class Reflect {
         });
     }
     
-    public static <T> Stream<AbstractMap.SimpleImmutableEntry<String, String>> getInstanceVarsStringEntries(Class<T> type, T t) {
+    public static <T> Stream<AbstractMap.SimpleImmutableEntry<String, String>> getInstanceVarsStringEntries(
+            final Class<T> type, final T t) {
         return getInstanceVarsStream(type).map(field -> {
             Object val;
             try {
@@ -43,16 +50,18 @@ public class Reflect {
             } catch (IllegalArgumentException | IllegalAccessException e) {
                 val = e;
             }
-            return new AbstractMap.SimpleImmutableEntry<String, String>(field.getName(), val.toString());
+            return new AbstractMap.SimpleImmutableEntry<String, String>(field.getName(),
+                    val.toString());
         });
     }
     
-    public static <T> String toString(Class<T> type, T t, CharSequence sep) {
-        return getInstanceVarsStringEntries(type, t).map(entry -> entry.getKey() + sep + entry.getValue())
-                                                    .collect(Collectors.joining(", ", "{", "}"));
+    public static <T> String toString(final Class<T> type, final T t, final CharSequence sep) {
+        return getInstanceVarsStringEntries(type, t)
+                .map(entry -> entry.getKey() + sep + entry.getValue())
+                .collect(Collectors.joining(", ", "{", "}"));
     }
     
-    public static <T> String toString(Class<T> type, T t) {
+    public static <T> String toString(final Class<T> type, final T t) {
         return toString(type, t, ": ");
     }
     

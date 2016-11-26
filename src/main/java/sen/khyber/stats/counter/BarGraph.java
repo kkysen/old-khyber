@@ -9,6 +9,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <T> frequency type
+ */
 public class BarGraph<T> {
     
     private Map<T, Long> counter;
@@ -16,31 +22,31 @@ public class BarGraph<T> {
     private int maxKeyLength;
     private long maxCount;
     private String title;
-    private int scaleMarkerStep = 5;
-    private List<String> scale = new ArrayList<>(4);
+    private final int scaleMarkerStep = 5;
+    private final List<String> scale = new ArrayList<>(4);
     private Set<String> bars;
     private Class<T> type;
     
-    public BarGraph(Map<T, Long> counter, Class<T> type) {
+    public BarGraph(final Map<T, Long> counter, final Class<T> type) {
         this.counter = counter;
         this.type = type;
     }
     
-    public BarGraph(Counter<T> counter) {
+    public BarGraph(final Counter<T> counter) {
         this(counter.unsortedCounts(), counter.getType());
     }
     
-    public BarGraph(List<Map.Entry<T, Long>> listCounter, Class<T> type) {
-        Map<T, Long> mapCounter = new HashMap<>(listCounter.size());
-        for (Map.Entry<T, Long> count : listCounter) {
+    public BarGraph(final List<Map.Entry<T, Long>> listCounter, final Class<T> type) {
+        final Map<T, Long> mapCounter = new HashMap<>(listCounter.size());
+        for (final Map.Entry<T, Long> count : listCounter) {
             mapCounter.put(count.getKey(), count.getValue());
         }
         counter = mapCounter;
         this.type = type;
     }
     
-    private static StringBuilder multiply(CharSequence s, int times, CharSequence start, CharSequence end) {
-        StringBuilder sb = new StringBuilder(start);
+    private static StringBuilder multiply(final CharSequence s, int times, final CharSequence start, final CharSequence end) {
+        final StringBuilder sb = new StringBuilder(start);
         while (times-- > 0) {
             sb.append(s);
         }
@@ -48,18 +54,18 @@ public class BarGraph<T> {
         return sb;
     }
     
-    private static StringBuilder multiply(CharSequence s, int times, CharSequence start) {
+    private static StringBuilder multiply(final CharSequence s, final int times, final CharSequence start) {
         return multiply(s, times, start, "");
     }
     
-    private static StringBuilder multiply(CharSequence s, int times) {
+    private static StringBuilder multiply(final CharSequence s, final int times) {
         return multiply(s, times, "");
     }
     
-    private static <U> int maxLength(Collection<U> objects) {
+    private static <U> int maxLength(final Collection<U> objects) {
         int max = Integer.MIN_VALUE;
-        for (U u : objects) {
-            int length = u.toString().length();
+        for (final U u : objects) {
+            final int length = u.toString().length();
             if (length > max) {
                 max = length;
             }
@@ -67,8 +73,8 @@ public class BarGraph<T> {
         return max;
     }
     
-    private static StringBuilder padLeft(String s, int length) {
-        StringBuilder sb = new StringBuilder();
+    private static StringBuilder padLeft(final String s, int length) {
+        final StringBuilder sb = new StringBuilder();
         length -= s.length();
         while (sb.length() < length) {
             sb.append(' ');
@@ -87,16 +93,16 @@ public class BarGraph<T> {
         return max;
     }*/
     
-    private static StringBuilder getBar(int i) {
+    private static StringBuilder getBar(final int i) {
         return multiply("-", i, " +", " " + i);
     }
     
-    private void indent(StringBuilder sb) {
+    private void indent(final StringBuilder sb) {
         sb.append(multiply(" ", maxKeyLength));
     }
     
     private StringBuilder indent() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         indent(sb);
         return sb;
     }
@@ -104,9 +110,9 @@ public class BarGraph<T> {
     private void getScale() {
         scale.add("");
         
-        StringBuilder sb = indent();
+        final StringBuilder sb = indent();
         for (int i = 0; i <= maxCount; i += scaleMarkerStep) {
-            String iAsString = String.valueOf(i);
+            final String iAsString = String.valueOf(i);
             sb.append(multiply(" ", scaleMarkerStep - iAsString.length(), iAsString));
         }
         scale.add(sb.toString());
@@ -138,12 +144,13 @@ public class BarGraph<T> {
     
     private void getBars() {
         bars = new TreeSet<>();
-        for (T t : keys) {
-            StringBuilder bar = padLeft(t.toString(), maxKeyLength).append(getBar(counter.get(t).intValue()));
+        for (final T t : keys) {
+            final StringBuilder bar = padLeft(t.toString(), maxKeyLength).append(getBar(counter.get(t).intValue()));
             bars.add(bar.toString());
         }
     }
     
+    @Override
     public String toString() {
         keys = counter.keySet();
         maxKeyLength = maxLength(keys) + 1;
@@ -152,7 +159,7 @@ public class BarGraph<T> {
         getScale();
         maxKeyLength--;
         getBars();
-        List<String> graph = new ArrayList<>(1 + scale.size() + bars.size());
+        final List<String> graph = new ArrayList<>(1 + scale.size() + bars.size());
         graph.add(title);
         graph.addAll(scale);
         graph.addAll(bars);

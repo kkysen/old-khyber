@@ -1,5 +1,8 @@
 package sen.khyber.web.search.google;
 
+import sen.khyber.io.MyFiles;
+import sen.khyber.web.Internet;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,9 +16,6 @@ import org.jsoup.nodes.Element;
 
 import lombok.Setter;
 
-import sen.khyber.io.MyFiles;
-import sen.khyber.web.Internet;
-
 /**
  * a Google search
  * If you use this too much, Google will block you.
@@ -27,8 +27,7 @@ public class GoogleSearch {
     /**
      * base URL for a Google search
      */
-    private static final String GOOGLE_SEARCH_URL = 
-        "https://www.google.com/search?";
+    private static final String GOOGLE_SEARCH_URL = "https://www.google.com/search?";
     
     /**
      * HTML element class that contains all the search results
@@ -68,7 +67,7 @@ public class GoogleSearch {
      * @param search Google search query
      * @param numResults number of search results returned by Google
      */
-    public GoogleSearch(String search, int numResults) {
+    public GoogleSearch(final String search, final int numResults) {
         this.search = search;
         this.numResults = numResults;
     }
@@ -78,7 +77,7 @@ public class GoogleSearch {
      * 
      * @param search Google search query
      */
-    public GoogleSearch(String search) {
+    public GoogleSearch(final String search) {
         this(search, DEFAULT_NUM_RESULTS);
     }
     
@@ -88,9 +87,9 @@ public class GoogleSearch {
      * @return a new GoogleSearch using a file instead of a URL
      * @throws IOException an IOException
      */
-    public static GoogleSearch of(Path path, int numResults) 
+    public static GoogleSearch of(final Path path, final int numResults)
             throws IOException {
-        GoogleSearch search = new GoogleSearch(path.toString(), numResults);
+        final GoogleSearch search = new GoogleSearch(path.toString(), numResults);
         search.setDoc(Jsoup.parse(MyFiles.read(path)));
         return search;
     }
@@ -102,13 +101,13 @@ public class GoogleSearch {
      * @return a new GoogleSearch using a file instead of a URL
      * @throws IOException IOException an IOException
      */
-    public static GoogleSearch of(Path path) throws IOException {
+    public static GoogleSearch of(final Path path) throws IOException {
         return of(path, DEFAULT_NUM_RESULTS);
     }
     
     private void memoizeDocument() throws IOException {
-        doc = Internet.getRenderedDocument(GOOGLE_SEARCH_URL + 
-            "q=" + search + "&num=" + numResults); 
+        doc = Internet.getRenderedDocument(GOOGLE_SEARCH_URL +
+                "q=" + search + "&num=" + numResults);
     }
     
     public Document getDocument() throws IOException {
@@ -152,7 +151,7 @@ public class GoogleSearch {
     }
     
     /**
-     * returns a Stream<Document> from the URLs 
+     * returns a Stream<Document> from the URLs
      * of all the results that pass the filter.
      * Implemented through Streams because fetching the Documents
      * requires waiting for other servers,
@@ -162,15 +161,15 @@ public class GoogleSearch {
      * @see Jsoup#connect(String)
      * 
      * @param filter a filter for the GoogleSearchResults
-     * @return the Documents of the pages linked in the results 
+     * @return the Documents of the pages linked in the results
      *         that pass the filter
      * @throws IOException an IOException
      */
-    public Stream<Document> getLinkedDocuments(Predicate<GoogleSearchResult> filter) 
+    public Stream<Document> getLinkedDocuments(final Predicate<GoogleSearchResult> filter)
             throws IOException {
-        Stream<String> urls = getResults().parallelStream()
-                                          .filter(filter)
-                                          .map(GoogleSearchResult::getUrl);
+        final Stream<String> urls = getResults().parallelStream()
+                .filter(filter)
+                .map(GoogleSearchResult::getUrl);
         return Internet.getDocuments(urls);
     }
     
@@ -189,11 +188,11 @@ public class GoogleSearch {
      * @return
      * @throws IOException
      */
-    public Stream<Document> getRenderedLinkedDocuments(Predicate<GoogleSearchResult> filter) 
+    public Stream<Document> getRenderedLinkedDocuments(final Predicate<GoogleSearchResult> filter)
             throws IOException {
-        Stream<String> urls = getResults().parallelStream()
-                                          .filter(filter)
-                                          .map(GoogleSearchResult::getUrl);
+        final Stream<String> urls = getResults().parallelStream()
+                .filter(filter)
+                .map(GoogleSearchResult::getUrl);
         return Internet.getRenderedDocuments(urls);
     }
     

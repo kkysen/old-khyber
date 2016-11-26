@@ -4,34 +4,40 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <T> frequency type
+ */
 public class FrequencyCounter<T> implements Cloneable, Iterable<T> {
     
-    private Map<T, Double> frequencies = new HashMap<>();
+    private final Map<T, Double> frequencies = new HashMap<>();
     private Class<T> type;
     
-    public FrequencyCounter(Map<T, Double> map) {
+    public FrequencyCounter(final Map<T, Double> map) {
         putAll(map);
     }
     
-    public FrequencyCounter(Iterable<Map.Entry<T, Double>> iter) {
+    public FrequencyCounter(final Iterable<Map.Entry<T, Double>> iter) {
         putAll(iter);
     }
     
-    public double put(T t, double frequency) {
+    public double put(final T t, final double frequency) {
         return frequencies.put(t, frequency);
     }
     
-    public void putAll(Map<T, Double> map) {
+    public void putAll(final Map<T, Double> map) {
         frequencies.putAll(map);
     }
     
-    public void putAll(Iterable<Map.Entry<T, Double>> iter) {
-        for (Map.Entry<T, Double> frequency : iter) {
+    public void putAll(final Iterable<Map.Entry<T, Double>> iter) {
+        for (final Map.Entry<T, Double> frequency : iter) {
             frequencies.put(frequency.getKey(), frequency.getValue());
         }
     }
     
-    public void putAll(FrequencyCounter<T> freqCounter) {
+    public void putAll(final FrequencyCounter<T> freqCounter) {
         putAll(freqCounter.rawFrequencies());
     }
     
@@ -39,19 +45,19 @@ public class FrequencyCounter<T> implements Cloneable, Iterable<T> {
         return frequencies;
     }
     
-    public Map<T, Integer> roundedFrequencies(int sigFigs) {
-        Map<T, Integer> roundedFrequencies = new HashMap<>();
-        for (T t : frequencies.keySet()) {
-            int roundedFrequency = (int) (frequencies.get(t) * Math.pow(10, sigFigs));
+    public Map<T, Integer> roundedFrequencies(final int sigFigs) {
+        final Map<T, Integer> roundedFrequencies = new HashMap<>();
+        for (final T t : frequencies.keySet()) {
+            final int roundedFrequency = (int) (frequencies.get(t) * Math.pow(10, sigFigs));
             roundedFrequencies.put(t, roundedFrequency);
         }
         return roundedFrequencies;
     }
-
+    
     @Override
     public Iterator<T> iterator() {
         // TODO Auto-generated method stub
         return null;
     }
-
+    
 }

@@ -1,5 +1,12 @@
 package sen.khyber.language.gutenberg;
 
+import sen.khyber.io.MyFiles;
+import sen.khyber.language.Language;
+import sen.khyber.language.Lexicon;
+import sen.khyber.stats.counter.CharCounter;
+import sen.khyber.stats.counter.IOCapableCounter;
+import sen.khyber.stats.counter.WordCounter;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -9,13 +16,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
-import sen.khyber.io.MyFiles;
-import sen.khyber.language.Language;
-import sen.khyber.language.Lexicon;
-import sen.khyber.stats.counter.CharCounter;
-import sen.khyber.stats.counter.IOCapableCounter;
-import sen.khyber.stats.counter.WordCounter;
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class GutenbergCounters {
     
     private static final String GUTENBERG_DIRECTORY = "C:/Users/kkyse/OneDrive/CS/www.gutenberg.lib.md.us";
@@ -40,7 +45,8 @@ public class GutenbergCounters {
         System.out.println("time: " + (System.currentTimeMillis() - startTime));
     }
     
-    public static void runCounter(final IOCapableCounter counter, final Path csv) throws IOException {
+    public static void runCounter(final IOCapableCounter counter, final Path csv)
+            throws IOException {
         addFiles(counter, gutenbergStream());
         counter.saveSorted(csv);
     }
@@ -61,7 +67,8 @@ public class GutenbergCounters {
     }
     
     public static void runEnglishWordCounter() throws IOException {
-        final WordCounter wordCounter = WordCounter.fromCSV(Paths.get("gutenbergEnglishWordCounts.csv"));
+        final WordCounter wordCounter = WordCounter
+                .fromCSV(Paths.get("gutenbergEnglishWordCounts.csv"));
         System.out.println("size: " + wordCounter.size());
         System.out.println("length: " + wordCounter.length());
         //wordCounter.mostCommonPercentages().forEach(System.out::println);

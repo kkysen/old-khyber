@@ -1,9 +1,9 @@
 package sen.khyber.crypto.padders;
 
+import sen.khyber.crypto.ByteArrays;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-
-import sen.khyber.crypto.ByteArrays;
 
 /**
  * 

@@ -1,5 +1,8 @@
 package sen.khyber.games.lexical;
 
+import sen.khyber.language.Lexicon;
+import sen.khyber.util.linkedMatrix.LinkedMatrix;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
@@ -18,9 +21,6 @@ import org.apache.commons.math3.distribution.EnumeratedDistribution;
 import org.apache.commons.math3.util.Pair;
 
 import lombok.Getter;
-
-import sen.khyber.language.Lexicon;
-import sen.khyber.util.linkedMatrix.LinkedMatrix;
 
 /*
  * to do:

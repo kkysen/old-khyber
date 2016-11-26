@@ -1,6 +1,6 @@
-package io.enums;
+package sen.khyber.io.enums;
 
-import reflect.Reflect;
+import sen.khyber.reflect.Reflect;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,6 +10,11 @@ import java.util.stream.Stream;
 
 import lombok.Getter;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public enum $className {
     
     $constants
@@ -25,16 +30,16 @@ public enum $className {
     }
     
     public static Set<$className> toSet() {
-        Set<$className> set = new HashSet<>();
-        for ($className $instanceName : $className.values()) {
+        final Set<$className> set = new HashSet<>();
+        for (final $className $instanceName : $className.values()) {
             set.add($instanceName);
         }
         return set;
     }
     
     public static List<$className> toList() {
-        List<$className> list = new ArrayList<>();
-        for ($className $instanceName : $className.values()) {
+        final List<$className> list = new ArrayList<>();
+        for (final $className $instanceName : $className.values()) {
             list.add($instanceName);
         }
         return list;
@@ -46,7 +51,7 @@ public enum $className {
     }
     
     public static void main(String[] args) throws Exception {
-        for ($className $instanceName : $className.values()) {
+        for (final $className $instanceName : $className.values()) {
             System.out.println($instanceName);
         }
         $className.toStream().forEach(System.out::println);

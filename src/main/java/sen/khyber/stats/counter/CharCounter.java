@@ -1,14 +1,19 @@
 package sen.khyber.stats.counter;
 
+import sen.khyber.io.MyFiles;
+import sen.khyber.web.Internet;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import sen.khyber.io.MyFiles;
-import sen.khyber.web.Internet;
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class CharCounter extends Counter<Character> implements IOCapableCounter {
     
     public CharCounter() {}

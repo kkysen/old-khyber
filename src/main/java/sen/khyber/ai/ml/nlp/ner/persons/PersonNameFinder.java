@@ -1,5 +1,10 @@
 package sen.khyber.ai.ml.nlp.ner.persons;
 
+import sen.khyber.io.MyFiles;
+import sen.khyber.io.MyFilesNoExceptions;
+import sen.khyber.regex.RegexUtils;
+import sen.khyber.stats.counter.WordCounter;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -9,11 +14,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
-import sen.khyber.io.MyFiles;
-import sen.khyber.io.MyFilesNoExceptions;
-import sen.khyber.regex.RegexUtils;
-import sen.khyber.stats.counter.WordCounter;
 
 /**
  * finds the human (only capitalized Latin) nameCandidates in text

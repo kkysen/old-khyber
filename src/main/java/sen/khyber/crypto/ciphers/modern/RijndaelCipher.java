@@ -1,14 +1,14 @@
 package sen.khyber.crypto.ciphers.modern;
 
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 import sen.khyber.crypto.ECB;
 import sen.khyber.crypto.ciphers.BlockCipher;
 import sen.khyber.crypto.ciphers.substitution.SubstitutionCipher;
 import sen.khyber.crypto.ciphers.transposition.TranspositionCipher;
 import sen.khyber.crypto.modes.Mode;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * 

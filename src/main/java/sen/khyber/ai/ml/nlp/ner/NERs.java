@@ -1,5 +1,7 @@
 package sen.khyber.ai.ml.nlp.ner;
 
+import sen.khyber.io.MyFiles;
+
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -13,7 +15,6 @@ import java.util.Set;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
-import sen.khyber.io.MyFiles;
 
 /**
  * static utility methods for Stanford's NER (Named Entity Recognition) API

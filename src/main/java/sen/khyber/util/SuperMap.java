@@ -5,6 +5,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <K> key type
+ * @param <V> value type
+ */
 public class SuperMap<K, V> extends HashMap<K, V> {
     
     /**
@@ -14,32 +21,32 @@ public class SuperMap<K, V> extends HashMap<K, V> {
     
     protected Collection<Collection<? super V>> superColls;
     
-    public SuperMap(Collection<Collection<? super V>> superColls) {
+    public SuperMap(final Collection<Collection<? super V>> superColls) {
         this.superColls = superColls;
     }
     
     @SafeVarargs
-    public SuperMap(Collection<? super V>... superColls) {
+    public SuperMap(final Collection<? super V>... superColls) {
         this.superColls = new ArrayList<>(Arrays.asList(superColls));
     }
     
     @Override
-    public V put(K key, V value) {
-        for (Collection<? super V> superList : superColls) {
+    public V put(final K key, final V value) {
+        for (final Collection<? super V> superList : superColls) {
             superList.add(value);
         }
         return super.put(key, value);
     }
     
     @Override
-    public V remove(Object obj) {
-        for (Collection<? super V> superList : superColls) {
+    public V remove(final Object obj) {
+        for (final Collection<? super V> superList : superColls) {
             superList.remove(obj);
         }
         return super.remove(obj);
     }
     
-    public void linkCollection(Collection<? super V> superColl) {
+    public void linkCollection(final Collection<? super V> superColl) {
         superColls.add(superColl);
     }
     

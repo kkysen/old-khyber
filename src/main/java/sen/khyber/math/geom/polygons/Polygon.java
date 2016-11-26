@@ -1,5 +1,7 @@
 package sen.khyber.math.geom.polygons;
 
+import sen.khyber.math.geom.Point;
+
 import java.awt.Graphics;
 import java.awt.geom.Path2D;
 import java.util.HashSet;
@@ -11,11 +13,11 @@ import javax.swing.JFrame;
 
 import lombok.Getter;
 
-import sen.khyber.math.geom.Point;
-
-/*
+/**
  * immutable except for memoization
  * but all methods are referentially transparent except for random()
+ * 
+ * @author Khyber Sen
  */
 public class Polygon {
     
@@ -23,16 +25,16 @@ public class Polygon {
     
     private final Point[] vertices;
     private final @Getter int size;
-    private double[] sides; // for memoization
+    private final double[] sides; // for memoization
     private String sideType; // for memoization
-    private double[] angles; // for memoization
+    private final double[] angles; // for memoization
     private int numRightAngles = 0;
     private int numAcuteAngles = 0;
     private int numObtuseAngles = 0;
     private double area, perimeter; // for memoization
     private String toString; // for memoization
     
-    protected Polygon(int size) {
+    protected Polygon(final int size) {
         if (size < 3) {
             throw new IllegalArgumentException("no polygons exist with less than 3 sides");
         }
@@ -42,10 +44,10 @@ public class Polygon {
         angles = new double[size];
     }
     
-    public Polygon(Point... vertices) {
+    public Polygon(final Point... vertices) {
         this(vertices.length);
         for (int i = 0; i < size; i++) {
-            Point vertex = vertices[i];
+            final Point vertex = vertices[i];
             if (vertex == null) {
                 throw new NullPointerException();
             }
@@ -53,7 +55,7 @@ public class Polygon {
         }
     }
     
-    public Polygon(double... verticesCoords) {
+    public Polygon(final double... verticesCoords) {
         this(verticesCoords.length / 2);
         if (verticesCoords.length % 2 != 0) {
             throw new IllegalArgumentException("cannot define a point with only one coordinate");
@@ -66,8 +68,8 @@ public class Polygon {
     // random polygon
     // might not be a polygon if points not in the right place
     // and it forms a intersecting shape
-    public static Polygon random(int size) {
-        Point[] vertices = new Point[size];
+    public static Polygon random(final int size) {
+        final Point[] vertices = new Point[size];
         for (int i = 0; i < size; i++) {
             vertices[i] = Point.random();
         }
@@ -84,7 +86,7 @@ public class Polygon {
      * -1 becomes arr.length - 1
      * as safety in loops when doing i + 1 or i - 1
      */
-    private int fixIndex(int i) {
+    private int fixIndex(final int i) {
         if (i == size) {
             return 0;
         } else if (i == -1) {
@@ -94,13 +96,13 @@ public class Polygon {
         }
     }
     
-    private double calcSide(int i) {
-        int next = fixIndex(i + 1);
+    private double calcSide(final int i) {
+        final int next = fixIndex(i + 1);
         return vertices[i].distanceTo(vertices[next]);
     }
     
     // for memoization
-    public double getSide(int i) {
+    public double getSide(final int i) {
         if (sides[i] == 0) {
             sides[i] = calcSide(i);
         }
@@ -118,14 +120,14 @@ public class Polygon {
      * does not work for any reflex angles
      * because the inverse cosine is undefined for reflex angles
      */
-    private double calcAngle(int i) {
-        int prev = fixIndex(i - 1);
-        int next = fixIndex(i + 1);
-        double a = getSide(prev);
-        double b = getSide(i);
-        double c = vertices[prev].distanceTo(vertices[next]);
-        double numerator = (a * a) + (b * b) - (c * c);
-        double denominator = 2 * a * b;
+    private double calcAngle(final int i) {
+        final int prev = fixIndex(i - 1);
+        final int next = fixIndex(i + 1);
+        final double a = getSide(prev);
+        final double b = getSide(i);
+        final double c = vertices[prev].distanceTo(vertices[next]);
+        final double numerator = a * a + b * b - c * c;
+        final double denominator = 2 * a * b;
         return Math.acos(numerator / denominator);
     }
     
@@ -145,15 +147,15 @@ public class Polygon {
         return angles;
     }
     
-    private static boolean isClose(double a, double b) {
+    private static boolean isClose(final double a, final double b) {
         return Math.abs(a - b) < IS_CLOSE_DISTANCE;
     }
-        
-    private static boolean isRight(double angle) {
+    
+    private static boolean isRight(final double angle) {
         return isClose(angle, Math.PI / 2);
     }
     
-    private static boolean isAcute(double angle) {
+    private static boolean isAcute(final double angle) {
         return angle < Math.PI / 2;
     }
     
@@ -162,12 +164,11 @@ public class Polygon {
         return ! isAcute(angle);
     }*/
     
-    
     // memoized
     private void calcNumAngleTypes() {
         if (numRightAngles + numAcuteAngles + numObtuseAngles == 0) {
             for (int i = 0; i < size; i++) {
-                double angle = getAngle(i);
+                final double angle = getAngle(i);
                 if (isRight(angle)) {
                     numRightAngles++;
                 } else if (isAcute(angle)) {
@@ -205,21 +206,21 @@ public class Polygon {
         
         double d;
         
-        public CloseDouble(double d) {
+        public CloseDouble(final double d) {
             this.d = d;
         }
-
+        
         @Override
         public int hashCode() {
             final int prime = 31;
             int result = 1;
-            long temp = Double.doubleToLongBits(d) >> IS_CLOSE_BITSHIFT << IS_CLOSE_BITSHIFT;
-            result = prime * result + (int) (temp ^ (temp >>> 32));
+            final long temp = Double.doubleToLongBits(d) >> IS_CLOSE_BITSHIFT << IS_CLOSE_BITSHIFT;
+            result = prime * result + (int) (temp ^ temp >>> 32);
             return result;
         }
-
+        
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (this == obj) {
                 return true;
             } else if (obj == null) {
@@ -227,9 +228,11 @@ public class Polygon {
             } else if (getClass() != obj.getClass()) {
                 return false;
             }
-            CloseDouble other = (CloseDouble) obj;
-            long thisAsLong = Double.doubleToLongBits(d) >> IS_CLOSE_BITSHIFT << IS_CLOSE_BITSHIFT;
-            long otherAsLong = Double.doubleToLongBits(other.d) >> IS_CLOSE_BITSHIFT << IS_CLOSE_BITSHIFT;
+            final CloseDouble other = (CloseDouble) obj;
+            final long thisAsLong = Double
+                    .doubleToLongBits(d) >> IS_CLOSE_BITSHIFT << IS_CLOSE_BITSHIFT;
+            final long otherAsLong = Double
+                    .doubleToLongBits(other.d) >> IS_CLOSE_BITSHIFT << IS_CLOSE_BITSHIFT;
             return thisAsLong == otherAsLong;
         }
         
@@ -241,11 +244,11 @@ public class Polygon {
      * it can determine the sideType: equilateral, scalene, or isosceles
      */
     private String calcSideType() {
-        Set<CloseDouble> sideLengths = new HashSet<>();
+        final Set<CloseDouble> sideLengths = new HashSet<>();
         for (int i = 0; i < size; i++) {
             sideLengths.add(new CloseDouble(getSide(i)));
         }
-        int uniqueSize = sideLengths.size();
+        final int uniqueSize = sideLengths.size();
         if (uniqueSize == 1) {
             return "equilateral";
         } else if (uniqueSize == size) {
@@ -298,13 +301,13 @@ public class Polygon {
     private double calcArea() {
         double area = 0;
         for (int i = 0; i < size - 1; i++) {
-            Point p1 = vertices[i];
-            Point p2 = vertices[i + 1];
+            final Point p1 = vertices[i];
+            final Point p2 = vertices[i + 1];
             area += p1.getX() * p2.getY();
             area -= p2.getX() * p1.getY();
         }
-        Point first = vertices[0];
-        Point last = vertices[size - 1];
+        final Point first = vertices[0];
+        final Point last = vertices[size - 1];
         area += last.getX() * first.getY();
         area -= first.getX() * last.getY();
         return Math.abs(area) / 2;
@@ -319,8 +322,8 @@ public class Polygon {
     }
     
     private String calcString() {
-        StringJoiner sj = new StringJoiner(", ", getClass().getSimpleName() + " @ ", "");
-        for (Point pt : vertices) {
+        final StringJoiner sj = new StringJoiner(", ", getClass().getSimpleName() + " @ ", "");
+        for (final Point pt : vertices) {
             sj.add(pt.toString());
         }
         return sj.toString();
@@ -336,20 +339,20 @@ public class Polygon {
     }
     
     public Path2D.Double getPath2D() {
-        Path2D.Double polygonPath = new Path2D.Double();
-        Point startPt = vertices[0];
+        final Path2D.Double polygonPath = new Path2D.Double();
+        final Point startPt = vertices[0];
         polygonPath.moveTo(startPt.getX(), startPt.getY());
         for (int i = 1; i < size; i++) {
-            Point pt = vertices[i];
+            final Point pt = vertices[i];
             polygonPath.lineTo(pt.getX(), pt.getY());
         }
         return polygonPath;
     }
     
     public java.awt.Polygon getAWTPolygon() {
-        java.awt.Polygon AWTPolygon = new java.awt.Polygon();
-        for (Point pt : vertices) {
-            AWTPolygon.addPoint((int) pt.getX() + 100, (int) pt.getY() + 100); 
+        final java.awt.Polygon AWTPolygon = new java.awt.Polygon();
+        for (final Point pt : vertices) {
+            AWTPolygon.addPoint((int) pt.getX() + 100, (int) pt.getY() + 100);
         }
         return AWTPolygon;
     }
@@ -357,15 +360,16 @@ public class Polygon {
     private class Canvas extends JComponent {
         
         private static final long serialVersionUID = 1L;
-
-        public void paint(Graphics g) {
+        
+        @Override
+        public void paint(final Graphics g) {
             g.drawPolygon(getAWTPolygon());
         }
         
     }
     
     public void draw() {
-        JFrame frame = new JFrame(toString());
+        final JFrame frame = new JFrame(toString());
         frame.setBounds(30, 30, 300, 300);
         frame.getContentPane().add(new Canvas());
         frame.setVisible(true);

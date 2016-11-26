@@ -5,12 +5,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Range implements Iterable<Integer> {
     
-    private int start, stop, step;
+    private final int start;
+    private int stop;
+    private final int step;
     private int originalStop;
     
-    public Range(int start, int stop, int step) {
+    public Range(final int start, final int stop, final int step) {
         this.start = start;
         this.stop = stop;
         this.step = step;
@@ -26,9 +33,8 @@ public class Range implements Iterable<Integer> {
     }
     
     private void handleBackwardsStep() {
-        if (   ((start < stop) && (step < 0)) 
-            || ((start > stop) && (step > 0))
-            ) {
+        if (start < stop && step < 0
+                || start > stop && step > 0) {
             stop = start;
         }
     }
@@ -38,11 +44,11 @@ public class Range implements Iterable<Integer> {
         stop -= range() % step;
     }
     
-    public Range(int start, int stop) {
+    public Range(final int start, final int stop) {
         this(start, stop, 1);
     }
     
-    public Range(int stop) {
+    public Range(final int stop) {
         this(0, stop);
     }
     
@@ -65,8 +71,8 @@ public class Range implements Iterable<Integer> {
     }
     
     public int[] toArray() {
-        int[] arr = new int[length()];
-        RangeIterator iter = iterator();
+        final int[] arr = new int[length()];
+        final RangeIterator iter = iterator();
         for (int i = 0; i < arr.length; i++) {
             arr[i] = iter.next();
         }
@@ -74,22 +80,22 @@ public class Range implements Iterable<Integer> {
     }
     
     public List<Integer> toList() {
-        List<Integer> list = new ArrayList<>(length());
-        for (Integer i : this) {
+        final List<Integer> list = new ArrayList<>(length());
+        for (final Integer i : this) {
             list.add(i);
         }
         return list;
     }
     
     public Set<Integer> toSet() {
-        Set<Integer> set = new HashSet<>(length());
-        for (Integer i : this) {
+        final Set<Integer> set = new HashSet<>(length());
+        for (final Integer i : this) {
             set.add(i);
         }
         return set;
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         System.out.println(new Range(1000, 0, -1).toSet());
     }
     

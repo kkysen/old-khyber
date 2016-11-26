@@ -1,10 +1,10 @@
 package sen.khyber.apcs;
 
+import sen.khyber.reflect.Reflect;
+
 import java.util.Random;
 
 import lombok.Getter;
-
-import sen.khyber.reflect.Reflect;
 
 /**
  * 

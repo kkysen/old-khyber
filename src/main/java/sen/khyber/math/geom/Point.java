@@ -5,8 +5,10 @@ import java.util.Random;
 import lombok.Getter;
 import lombok.NonNull;
 
-/*
+/**
  * immutable
+ * 
+ * @author Khyber Sen
  */
 public class Point implements Comparable<Point>, Cloneable {
     
@@ -18,7 +20,7 @@ public class Point implements Comparable<Point>, Cloneable {
     private final @Getter double x;
     private final @Getter double y;
     
-    public Point(double x, double y) {
+    public Point(final double x, final double y) {
         this.x = x;
         this.y = y;
     }
@@ -36,11 +38,11 @@ public class Point implements Comparable<Point>, Cloneable {
         return new Point(rand(), rand());
     }
     
-    public Point move(double x, double y) {
+    public Point move(final double x, final double y) {
         return new Point(this.x + x, this.y + y);
     }
     
-    public Point move(@NonNull Point other) {
+    public Point move(@NonNull final Point other) {
         return move(other.x, other.y);
     }
     
@@ -48,12 +50,12 @@ public class Point implements Comparable<Point>, Cloneable {
         return Math.sqrt(x * x + y * y);
     }
     
-    private boolean isClose(double a, double b) {
+    private boolean isClose(final double a, final double b) {
         return Math.abs(a - b) < IS_CLOSE_DISTANCE;
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == this) {
             return true;
         } else if (obj == null) {
@@ -61,9 +63,9 @@ public class Point implements Comparable<Point>, Cloneable {
         } else if (obj.getClass() != getClass()) {
             return false;
         }
-        Point other = (Point) obj;
-        boolean xEquals = isClose(x, other.x);
-        boolean yEquals = isClose(y, other.y);
+        final Point other = (Point) obj;
+        final boolean xEquals = isClose(x, other.x);
+        final boolean yEquals = isClose(y, other.y);
         return xEquals && yEquals;
     }
     
@@ -74,14 +76,14 @@ public class Point implements Comparable<Point>, Cloneable {
         long temp;
         // fix to allow for floating point error tolerance
         temp = Double.doubleToLongBits(x);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + (int) (temp ^ temp >>> 32);
         temp = Double.doubleToLongBits(y);
-        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + (int) (temp ^ temp >>> 32);
         return result;
     }
     
     @Override
-    public int compareTo(@NonNull Point other) {
+    public int compareTo(@NonNull final Point other) {
         if (other == null) {
             throw new NullPointerException();
         }
@@ -92,13 +94,13 @@ public class Point implements Comparable<Point>, Cloneable {
         }
     }
     
-    public double distanceTo(@NonNull Point other) {
-        double dx = x - other.x;
-        double dy = y - other.y;
+    public double distanceTo(@NonNull final Point other) {
+        final double dx = x - other.x;
+        final double dy = y - other.y;
         return Math.sqrt(dx * dx + dy * dy);
     }
     
-    public double distance(@NonNull Point other) {
+    public double distance(@NonNull final Point other) {
         return distanceTo(other);
     }
     

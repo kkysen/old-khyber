@@ -1,5 +1,7 @@
 package sen.khyber.stats.counter;
 
+import sen.khyber.util.Parallel;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,13 +12,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
 
-import sen.khyber.util.Parallel;
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class FastAsciiCounter {
     
     private static final int NUM_CORES = Parallel.numCores();
     private static final long MAX_MEM = Parallel.maxMemory();
-    private static final int BUF_SIZE = (int) (MAX_MEM / 4 > Integer.MAX_VALUE 
+    private static final int BUF_SIZE = (int) (MAX_MEM / 4 > Integer.MAX_VALUE
             ? Integer.MAX_VALUE : MAX_MEM / 4);
     
     private static final int[] arrCounter = new int[256];
@@ -54,11 +59,11 @@ public class FastAsciiCounter {
     
     private void addBytes(final byte[] bytes) {
         Stream.of(getIntervals(bytes.length))
-              .parallel()
-              .forEach(interval -> {
-            //System.out.println("interval: [" + interval[0] + ", " + interval[1] + ")");
-            addBytes(bytes, interval[0], interval[1]);
-        });
+                .parallel()
+                .forEach(interval -> {
+                    //System.out.println("interval: [" + interval[0] + ", " + interval[1] + ")");
+                    addBytes(bytes, interval[0], interval[1]);
+                });
     }
     
     private static double percent(final double percent, final int numDecimals) {
@@ -82,13 +87,15 @@ public class FastAsciiCounter {
     
     public void addFile(final Path path) throws IOException {
         final long fileSize = Files.size(path);
-        final BufferedInputStream in = new BufferedInputStream(Files.newInputStream(path), BUF_SIZE);
+        final BufferedInputStream in = new BufferedInputStream(Files.newInputStream(path),
+                BUF_SIZE);
         final byte[] bytes = new byte[BUF_SIZE];
         System.out.println("reading " + (fileSize >> 20) + " MB...");
         startTime = System.currentTimeMillis();
         for (long L = 0; L < fileSize;) {
             L += in.read(bytes);
-            System.out.print("read " + (L >> 20) + " MB " + percent((double) L / fileSize, 2) + "%");
+            System.out
+                    .print("read " + (L >> 20) + " MB " + percent((double) L / fileSize, 2) + "%");
             //System.out.println(counter);
             //System.out.println();
             addBytes(bytes);

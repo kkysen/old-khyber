@@ -1,5 +1,7 @@
 package sen.khyber.ai.ml.nlp.ner;
 
+import sen.khyber.io.MyFiles;
+
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -10,7 +12,6 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.sequences.DocumentReaderAndWriter;
 import edu.stanford.nlp.util.Triple;
-import sen.khyber.io.MyFiles;
 
 /**
  * This is a demo of calling CRFClassifier programmatically.

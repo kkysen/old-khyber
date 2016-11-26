@@ -1,9 +1,14 @@
 package sen.khyber.optimization.continuous;
 
-import java.util.Random;
-
 import sen.khyber.optimization.sa.State;
 
+import java.util.Random;
+
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Rastrigin implements State {
     
     public static final double STDDEV = .05;
@@ -13,13 +18,13 @@ public class Rastrigin implements State {
     public double prevX;
     public double prevY;
     
-    public Rastrigin(double x, double y) {
+    public Rastrigin(final double x, final double y) {
         this.x = x;
         this.y = y;
         prevX = x;
         prevY = y;
     }
-        
+    
     public Rastrigin() {
         this(10.0, 10.0);
     }
@@ -31,21 +36,21 @@ public class Rastrigin implements State {
         x += STDDEV * random.nextGaussian();
         y += STDDEV * random.nextGaussian();
     }
-
+    
     @Override
     public void undo() {
         x = prevX;
         y = prevY;
     }
-
+    
     @Override
     public double energy() {
-        return (x * x) + (y * y) - Math.cos(18 * x) - Math.cos(18 * y) + 2;
+        return x * x + y * y - Math.cos(18 * x) - Math.cos(18 * y) + 2;
     }
-
+    
     @Override
     public State clone() {
-        Rastrigin copy = new Rastrigin(x, y);
+        final Rastrigin copy = new Rastrigin(x, y);
         copy.prevX = prevX;
         copy.prevY = prevY;
         return copy;
@@ -55,5 +60,5 @@ public class Rastrigin implements State {
     public String toString() {
         return "(" + x + ", " + y + ")";
     }
-
+    
 }

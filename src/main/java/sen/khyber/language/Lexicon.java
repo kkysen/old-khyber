@@ -1,5 +1,7 @@
 package sen.khyber.language;
 
+import sen.khyber.io.MyFiles;
+
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -12,15 +14,19 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 
-import sen.khyber.io.MyFiles;
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Lexicon {
     
     private final @Getter String name;
     private final Set<String> lexicon;
     private final @Getter Map<String, Double> letterFrequencies;
     
-    private static Set<String> loadLexicon(final String lexiconPath, final boolean isConcurrent) throws IOException {
+    private static Set<String> loadLexicon(final String lexiconPath, final boolean isConcurrent)
+            throws IOException {
         final List<String> lines = MyFiles.readLines(Paths.get(lexiconPath));
         Set<String> lexicon;
         if (isConcurrent) {
@@ -32,7 +38,8 @@ public class Lexicon {
         return lexicon;
     }
     
-    private static Map<String, Double> loadLetterFrequencies(final String letterFrequenciesPath) throws IOException {
+    private static Map<String, Double> loadLetterFrequencies(final String letterFrequenciesPath)
+            throws IOException {
         final Map<String, Double> letterFrequencies = new HashMap<>();
         final List<String> lines = MyFiles.readLines(Paths.get(letterFrequenciesPath));
         for (final String line : lines) {

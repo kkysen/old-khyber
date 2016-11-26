@@ -9,48 +9,53 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Digits {
     
-    public static void toSet(int i, int base, Set<Integer> digits) {
+    public static void toSet(int i, final int base, final Set<Integer> digits) {
         while (i > 0) {
             digits.add(i % base);
             i /= base;
         }
     }
     
-    public static void toSet(long L, int base, Set<Integer> digits) {
+    public static void toSet(long L, final int base, final Set<Integer> digits) {
         while (L > 0) {
             digits.add((int) L % base);
             L /= base;
         }
     }
     
-    public static void toSet(int i, Set<Integer> digits) {
+    public static void toSet(final int i, final Set<Integer> digits) {
         toSet(i, 10, digits);
     }
     
-    public static void toSet(long L, Set<Integer> digits) {
+    public static void toSet(final long L, final Set<Integer> digits) {
         toSet(L, 10, digits);
     }
     
-    public static Set<Integer> toSet(int... ints) {
-        Set<Integer> digits = new HashSet<>();
-        for (int i : ints) {
+    public static Set<Integer> toSet(final int... ints) {
+        final Set<Integer> digits = new HashSet<>();
+        for (final int i : ints) {
             toSet(i, digits);
         }
         return digits;
     }
     
-    public static Set<Integer> toSet(long... longs) {
-        Set<Integer> digits = new HashSet<>();
-        for (long L : longs) {
+    public static Set<Integer> toSet(final long... longs) {
+        final Set<Integer> digits = new HashSet<>();
+        for (final long L : longs) {
             toSet(L, digits);
         }
         return digits;
     }
     
-    public static List<Integer> toListBase(int i, int base) {
-        List<Integer> digits = new ArrayList<>();
+    public static List<Integer> toListBase(int i, final int base) {
+        final List<Integer> digits = new ArrayList<>();
         while (i > 0) {
             digits.add(i % base);
             i /= base;
@@ -59,8 +64,8 @@ public class Digits {
         return digits;
     }
     
-    public static List<Integer> toListBase(long L, int base) {
-        List<Integer> digits = new ArrayList<>();
+    public static List<Integer> toListBase(long L, final int base) {
+        final List<Integer> digits = new ArrayList<>();
         while (L > 0) {
             digits.add((int) L % base);
             L /= base;
@@ -69,19 +74,19 @@ public class Digits {
         return digits;
     }
     
-    public static List<Integer> toList(int i) {
+    public static List<Integer> toList(final int i) {
         return toListBase(i, 10);
     }
     
-    public static List<Integer> toList(long L) {
+    public static List<Integer> toList(final long L) {
         return toListBase(L, 10);
     }
     
-    public static Stream<List<Integer>> toList(int... ints) {
+    public static Stream<List<Integer>> toList(final int... ints) {
         return Arrays.stream(ints).mapToObj(Digits::toList);
     }
     
-    public static Stream<List<Integer>> toList(long... longs) {
+    public static Stream<List<Integer>> toList(final long... longs) {
         return Arrays.stream(longs).mapToObj(Digits::toList);
     }
     
@@ -92,8 +97,9 @@ public class Digits {
         return sb.toString();
     }*/
     
-    public static void main(String[] args) throws Exception {
-        System.out.println(toList(125, 328, 13245, 67634, 24356, 6343).collect(Collectors.toList()));
+    public static void main(final String[] args) throws Exception {
+        System.out
+                .println(toList(125, 328, 13245, 67634, 24356, 6343).collect(Collectors.toList()));
         System.out.println(toList(0));
         
         /*int numFields = 1000;

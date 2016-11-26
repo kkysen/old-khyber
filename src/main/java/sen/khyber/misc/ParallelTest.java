@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class ParallelTest {
     
     public static void main(final String[] args) {

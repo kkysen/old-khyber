@@ -1,9 +1,14 @@
 package sen.khyber.optimization.combinations;
 
-import java.util.Random;
-
 import sen.khyber.optimization.sa.State;
 
+import java.util.Random;
+
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class BinPackingProblem implements State {
     
     public static Random random = new Random();
@@ -13,7 +18,7 @@ public class BinPackingProblem implements State {
     public int lastItem;
     public int lastPlacement;
     
-    public BinPackingProblem(int min, int max, int items, int bins) {
+    public BinPackingProblem(final int min, final int max, final int items, final int bins) {
         sizes = new int[items];
         placements = new int[items];
         binLoads = new int[bins];
@@ -37,33 +42,37 @@ public class BinPackingProblem implements State {
         }
         binLoads[placements[lastItem]] += sizes[lastItem];
     }
-
+    
     @Override
     public void undo() {
         binLoads[placements[lastItem]] -= sizes[lastItem];
         binLoads[lastPlacement] += sizes[lastItem];
         placements[lastItem] = lastPlacement;
     }
-
+    
     @Override
     public double energy() {
         int min = binLoads[0];
         int max = binLoads[0];
         for (int i = 1; i < binLoads.length; i++) {
-            int next = binLoads[i];
-            if (next < min) min = next;
-            if (next > max) max = next;
+            final int next = binLoads[i];
+            if (next < min) {
+                min = next;
+            }
+            if (next > max) {
+                max = next;
+            }
         }
         return max - min;
     }
-
+    
     @Override
     public State clone() {
-        BinPackingProblem copy = new BinPackingProblem();
+        final BinPackingProblem copy = new BinPackingProblem();
         copy.sizes = sizes.clone();
         copy.placements = placements.clone();
         copy.binLoads = binLoads.clone();
         return copy;
     }
-
+    
 }

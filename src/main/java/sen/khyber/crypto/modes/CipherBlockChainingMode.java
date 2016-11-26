@@ -1,11 +1,11 @@
 package sen.khyber.crypto.modes;
 
+import sen.khyber.crypto.ByteArrays;
+
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import sen.khyber.crypto.ByteArrays;
 
 /**
  * 

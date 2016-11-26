@@ -20,6 +20,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <T> type counted
+ */
 public class Counter<T> implements Cloneable, Iterable<T> {
     
     private final Map<T, AtomicLong> counter = new ConcurrentHashMap<>();

@@ -1,5 +1,9 @@
 package sen.khyber.crypto.ciphers.transposition;
 
+import sen.khyber.crypto.ciphers.BlockCipher;
+import sen.khyber.crypto.modes.ElectronicCodebookMode;
+import sen.khyber.crypto.modes.Mode;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -7,10 +11,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
-import sen.khyber.crypto.ciphers.BlockCipher;
-import sen.khyber.crypto.modes.ElectronicCodebookMode;
-import sen.khyber.crypto.modes.Mode;
 
 /**
  * 

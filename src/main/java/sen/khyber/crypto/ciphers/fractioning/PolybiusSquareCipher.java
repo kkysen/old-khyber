@@ -1,11 +1,11 @@
 package sen.khyber.crypto.ciphers.fractioning;
 
+import sen.khyber.crypto.ByteArrays;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import sen.khyber.crypto.ByteArrays;
 
 /**
  * 

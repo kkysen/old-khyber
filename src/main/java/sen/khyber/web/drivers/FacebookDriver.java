@@ -9,6 +9,11 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class FacebookDriver {
     
     private final WebDriver driver;

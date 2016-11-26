@@ -19,7 +19,6 @@ import org.jsoup.nodes.Document;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.IncorrectnessListener;
 import com.gargoylesoftware.htmlunit.InteractivePage;
 import com.gargoylesoftware.htmlunit.ScriptException;
 import com.gargoylesoftware.htmlunit.SilentCssErrorHandler;
@@ -39,8 +38,7 @@ public class Internet {
     /**
      * Jsoup user agent string for Chrome
      */
-    private static final String JSOUP_USER_AGENT = 
-            "Mozilla/5.0 (Windows NT 10.0; WOW64) "
+    private static final String JSOUP_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64) "
             + "AppleWebKit/537.36 (KHTML, like Gecko) "
             + "Chrome/53.0.2785.143 Safari/537.36";
     
@@ -52,8 +50,7 @@ public class Internet {
     /**
      * HtmlUnit Chrome browser version for WebClient
      */
-    private static final BrowserVersion HTML_UNIT_BROWSER_VERSION = 
-            BrowserVersion.CHROME;
+    private static final BrowserVersion HTML_UNIT_BROWSER_VERSION = BrowserVersion.CHROME;
     
     /**
      * reads the html of a website and returns it as a String
@@ -62,9 +59,9 @@ public class Internet {
      * @return a String of the html of the website
      * @throws IOException an IOException
      */
-    public static String read(URL url) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-        StringBuilder sb = new StringBuilder();
+    public static String read(final URL url) throws IOException {
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+        final StringBuilder sb = new StringBuilder();
         String line;
         while ((line = reader.readLine()) != null) {
             sb.append(line);
@@ -80,84 +77,79 @@ public class Internet {
      * @return a Jsoup Document of the website
      * @throws IOException an IOException
      */
-    public static Document getDocument(String url) throws IOException {
+    public static Document getDocument(final String url) throws IOException {
         return Jsoup.connect(url)
-                    .userAgent(JSOUP_USER_AGENT)
-                    .referrer(JSOUP_REFERRER)
-                    .get();
+                .userAgent(JSOUP_USER_AGENT)
+                .referrer(JSOUP_REFERRER)
+                .get();
     }
     
-    public static Stream<Document> getDocuments(Stream<String> urls) {
+    public static Stream<Document> getDocuments(final Stream<String> urls) {
         return urls.map(url -> {
             try {
                 return getDocument(url);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 //e.printStackTrace();
                 return Jsoup.parse("");
             }
         });
     }
     
-    public static Stream<Document> getDocuments(String... urls) {
+    public static Stream<Document> getDocuments(final String... urls) {
         return getDocuments(Stream.of(urls));
     }
     
-    public static Stream<Document> getDocuments(Collection<String> urls) {
+    public static Stream<Document> getDocuments(final Collection<String> urls) {
         return getDocuments(urls.parallelStream());
     }
     
     private static WebClient getSilencedWebClient() {
         
-        LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log", 
+        LogFactory.getFactory().setAttribute("org.apache.commons.logging.Log",
                 "org.apache.commons.logging.impl.NoOpLog");
-        Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF); 
+        Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(Level.OFF);
         Logger.getLogger("org.apache.commons.httpclient").setLevel(Level.OFF);
         
         final WebClient webClient = new WebClient(HTML_UNIT_BROWSER_VERSION);
         
-        WebClientOptions webClientOptions = webClient.getOptions();
+        final WebClientOptions webClientOptions = webClient.getOptions();
         webClientOptions.setCssEnabled(false);
         webClientOptions.setThrowExceptionOnFailingStatusCode(false);
         webClientOptions.setThrowExceptionOnScriptError(false);
         
         webClient.setCssErrorHandler(new SilentCssErrorHandler());
         
-        webClient.setIncorrectnessListener(new IncorrectnessListener() {
-            
-            @Override
-            public void notify(String arg0, Object arg1) {}
-            
-        });
+        webClient.setIncorrectnessListener((arg0, arg1) -> {});
         
         webClient.setJavaScriptErrorListener(new JavaScriptErrorListener() {
             
             @Override
-            public void loadScriptError(InteractivePage arg0, URL arg1, 
-                    Exception arg2) {}
+            public void loadScriptError(final InteractivePage arg0, final URL arg1,
+                    final Exception arg2) {}
             
             @Override
-            public void malformedScriptURL(InteractivePage arg0, String arg1, 
-                    MalformedURLException arg2) {}
+            public void malformedScriptURL(final InteractivePage arg0, final String arg1,
+                    final MalformedURLException arg2) {}
             
             @Override
-            public void scriptException(InteractivePage arg0, 
-                    ScriptException arg1) {}
+            public void scriptException(final InteractivePage arg0,
+                    final ScriptException arg1) {}
             
             @Override
-            public void timeoutError(InteractivePage arg0, long arg1,
-                    long arg2) {}
+            public void timeoutError(final InteractivePage arg0, final long arg1,
+                    final long arg2) {}
             
         });
         
         webClient.setHTMLParserListener(new HTMLParserListener() {
             
             @Override
-            public void error(String arg0, URL arg1, String arg2, int arg3,
-                    int arg4, String arg5) {}
+            public void error(final String arg0, final URL arg1, final String arg2, final int arg3,
+                    final int arg4, final String arg5) {}
             
             @Override
-            public void warning(String arg0, URL arg1, String arg2, int arg3,
-                    int arg4, String arg5) {}
+            public void warning(final String arg0, final URL arg1, final String arg2, final int arg3,
+                    final int arg4, final String arg5) {}
             
         });
         
@@ -165,19 +157,19 @@ public class Internet {
         
     }
     
-    public static Document getRenderedDocument(String url) 
+    public static Document getRenderedDocument(final String url)
             throws FailingHttpStatusCodeException, MalformedURLException, IOException {
         final WebClient webClient = getSilencedWebClient();
-        HtmlPage page = webClient.getPage(url);
-        File tempFile = new File("tempHtmlPage.html");
+        final HtmlPage page = webClient.getPage(url);
+        final File tempFile = new File("tempHtmlPage.html");
         page.save(tempFile);
-        Document doc = Jsoup.parse(tempFile, "UTF-8");
+        final Document doc = Jsoup.parse(tempFile, "UTF-8");
         webClient.close();
         tempFile.delete();
         return doc;
     }
     
-    public static Stream<Document> getRenderedDocuments(Stream<String> urls) {
+    public static Stream<Document> getRenderedDocuments(final Stream<String> urls) {
         return urls.map(url -> {
             try {
                 return getRenderedDocument(url);
@@ -188,15 +180,15 @@ public class Internet {
         });
     }
     
-    public static Stream<Document> getRenderedDocuments(String... urls) {
+    public static Stream<Document> getRenderedDocuments(final String... urls) {
         return getRenderedDocuments(Stream.of(urls));
     }
     
-    public static Stream<Document> getRenderedDocuments(Collection<String> urls) {
+    public static Stream<Document> getRenderedDocuments(final Collection<String> urls) {
         return getRenderedDocuments(urls.parallelStream());
     }
     
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         System.out.println(getRenderedDocument("http://google.com/search?q=hello").html());
     }
     

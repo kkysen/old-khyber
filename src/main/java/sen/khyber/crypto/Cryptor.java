@@ -1,16 +1,5 @@
 package sen.khyber.crypto;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import sen.khyber.crypto.ciphers.Cipher;
 import sen.khyber.crypto.ciphers.NullCipher;
 import sen.khyber.crypto.ciphers.substitution.monoalphabetic.AtbashCipher;
@@ -23,6 +12,17 @@ import sen.khyber.crypto.ciphers.transposition.RailFenceCipher;
 import sen.khyber.crypto.ciphers.transposition.ReverseCipher;
 import sen.khyber.crypto.padders.Padder;
 import sen.khyber.io.MyFiles;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 

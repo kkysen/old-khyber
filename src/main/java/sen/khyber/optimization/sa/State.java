@@ -1,5 +1,10 @@
 package sen.khyber.optimization.sa;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public interface State extends Cloneable {
     
     public void step();

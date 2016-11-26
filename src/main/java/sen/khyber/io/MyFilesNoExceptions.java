@@ -13,109 +13,111 @@ import java.util.function.Function;
  */
 public class MyFilesNoExceptions {
     
-    public static String read(Path path) {
+    public static String read(final Path path) {
         try {
             return MyFiles.read(path);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return null;
         }
     }
     
-    public static void write(Path path, String contents) {
+    public static void write(final Path path, final String contents) {
         try {
             MyFiles.write(path, contents);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static <T> void write(Path path, Iterable<T> iter) {
+    public static <T> void write(final Path path, final Iterable<T> iter) {
         try {
             MyFiles.write(path, iter);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static <T> void write(Path path, T t) {
+    public static <T> void write(final Path path, final T t) {
         try {
             MyFiles.write(path, t);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static void append(Path path, String contents) {
+    public static void append(final Path path, final String contents) {
         try {
             MyFiles.append(path, contents);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static <T> void append(Path path, T t) {
+    public static <T> void append(final Path path, final T t) {
         try {
             MyFiles.append(path, t);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static void modify(Path readPath, Path writePath, Consumer<byte[]> modifier) {
+    public static void modify(final Path readPath, final Path writePath,
+            final Consumer<byte[]> modifier) {
         try {
             MyFiles.modify(readPath, writePath, modifier);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static void modify(Path path, Consumer<byte[]> modifier) {
+    public static void modify(final Path path, final Consumer<byte[]> modifier) {
         try {
             MyFiles.modify(path, modifier);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static void modifyLines(Path readPath, Path writePath, Function<String, String> modifier) {
+    public static void modifyLines(final Path readPath, final Path writePath,
+            final Function<String, String> modifier) {
         try {
             MyFiles.modifyLines(readPath, writePath, modifier);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static void modifyLines(Path path, Function<String, String> modifier) {
+    public static void modifyLines(final Path path, final Function<String, String> modifier) {
         try {
             MyFiles.modifyLines(path, modifier);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
     
-    public static <R> R apply(Path path, Function<byte[], R> function) {
+    public static <R> R apply(final Path path, final Function<byte[], R> function) {
         try {
             return MyFiles.apply(path, function);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return null;
         }
     }
     
-    public static List<String> readLines(Path path) {
+    public static List<String> readLines(final Path path) {
         try {
             return MyFiles.readLines(path);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return null;
         }
     }
     
-    public static List<Path> walkDirectory(Path dir, int maxDepths) {
+    public static List<Path> walkDirectory(final Path dir, final int maxDepths) {
         try {
             return MyFiles.walkDirectory(dir, maxDepths);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return null;
         }

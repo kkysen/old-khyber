@@ -1,14 +1,19 @@
 package sen.khyber.stats.counter;
 
+import sen.khyber.io.MyFiles;
+import sen.khyber.web.Internet;
+
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import sen.khyber.io.MyFiles;
-import sen.khyber.web.Internet;
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class WordCounter extends Counter<String> implements IOCapableCounter {
     
     //private @Setter boolean isAllLowerCase = true;
@@ -47,7 +52,6 @@ public class WordCounter extends Counter<String> implements IOCapableCounter {
         wordCounter.addWebsite(url);
         return wordCounter;
     }
-    
     
     /*public static List<String> splitIntoWords(String unsplitWords) {
         List<String> words = new ArrayList<>();

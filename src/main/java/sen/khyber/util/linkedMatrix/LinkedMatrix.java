@@ -1,5 +1,7 @@
 package sen.khyber.util.linkedMatrix;
 
+import sen.khyber.tuples.Pair;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,8 +12,12 @@ import java.util.stream.Stream;
 
 import lombok.Getter;
 
-import sen.khyber.tuples.Pair;
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <E> element type
+ */
 public abstract class LinkedMatrix<E> implements Cloneable {
     
     public class Node implements Cloneable {
@@ -152,8 +158,6 @@ public abstract class LinkedMatrix<E> implements Cloneable {
         randomizeElements(supplier);
         linkNeighbors();
     }
-    
-    
     
     protected LinkedMatrix() {} // for cloning
     

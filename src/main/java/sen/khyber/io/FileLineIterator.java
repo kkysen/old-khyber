@@ -7,15 +7,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Iterator;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class FileLineIterator implements Iterator<String> {
     
     private BufferedReader reader;
     private String line;
     
-    public FileLineIterator(Path path, Charset charset) {
+    public FileLineIterator(final Path path, final Charset charset) {
         try {
             reader = Files.newBufferedReader(path, charset);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             throw new NullPointerException("BufferedReader is null");
         }
@@ -25,7 +30,7 @@ public class FileLineIterator implements Iterator<String> {
     public boolean hasNext() {
         try {
             line = reader.readLine();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
         return line != null;

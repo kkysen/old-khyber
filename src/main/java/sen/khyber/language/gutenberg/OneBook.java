@@ -8,6 +8,11 @@ import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class OneBook {
     
     private static final String GUTENBERG_DIRECTORY = "C:/Users/kkyse/OneDrive/CS/www.gutenberg.lib.md.us";
@@ -24,9 +29,9 @@ public class OneBook {
     
     public static Stream<Path> gutenbergStream(final long maxSize) throws IOException {
         return Files.walk(Paths.get(GUTENBERG_DIRECTORY), 1)
-                    .parallel()
-                    .filter(path -> path.toString().endsWith(".txt"))
-                    .limit(maxSize);
+                .parallel()
+                .filter(path -> path.toString().endsWith(".txt"))
+                .limit(maxSize);
     }
     
     public static void create(final Path oneBookPath) throws IOException {

@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <E> element type
+ */
 public class SuperList<E> extends ArrayList<E> {
     
     /**
@@ -13,33 +19,33 @@ public class SuperList<E> extends ArrayList<E> {
     
     protected Collection<Collection<? super E>> superColls;
     
-    public SuperList(Collection<Collection<? super E>> superColls) {
+    public SuperList(final Collection<Collection<? super E>> superColls) {
         this.superColls = superColls;
     }
     
     @SafeVarargs
-    public SuperList(Collection<? super E>... superColls) {
+    public SuperList(final Collection<? super E>... superColls) {
         this.superColls = new ArrayList<>(Arrays.asList(superColls));
     }
     
     @Override
-    public boolean add(E e) {
+    public boolean add(final E e) {
         super.add(e);
-        for (Collection<? super E> superList : superColls) {
+        for (final Collection<? super E> superList : superColls) {
             superList.add(e);
         }
         return true;
     }
     
     @Override
-    public boolean remove(Object obj) {
-        for (Collection<? super E> superList : superColls) {
+    public boolean remove(final Object obj) {
+        for (final Collection<? super E> superList : superColls) {
             superList.remove(obj);
         }
         return super.remove(obj);
     }
     
-    public void linkCollection(Collection<? super E> superColl) {
+    public void linkCollection(final Collection<? super E> superColl) {
         superColls.add(superColl);
     }
     

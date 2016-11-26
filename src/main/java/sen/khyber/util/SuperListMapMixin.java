@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <K> key type
+ * @param <V> value type
+ */
 public class SuperListMapMixin<K, V> extends SuperList<V> {
     
     /**
@@ -13,35 +20,35 @@ public class SuperListMapMixin<K, V> extends SuperList<V> {
     
     protected Collection<Map<? super K, ? super V>> superMaps;
     
-    private Collection<Collection<? super V>> superValueColls;
+    private final Collection<Collection<? super V>> superValueColls;
     
-    public SuperListMapMixin(Collection<Collection<? super V>> superColls, 
-            Collection<Map<? super K, ? super V>> superMaps) {
+    public SuperListMapMixin(final Collection<Collection<? super V>> superColls,
+            final Collection<Map<? super K, ? super V>> superMaps) {
         super.superColls = superColls;
         this.superMaps = superMaps;
         superValueColls = new ArrayList<>();
-        for (Map<? super K, ? super V> superMap : superMaps) {
+        for (final Map<? super K, ? super V> superMap : superMaps) {
             superValueColls.add(superMap.values());
         }
     }
     
-    public boolean addWithKey(K key, V value) {
+    public boolean addWithKey(final K key, final V value) {
         super.add(value);
-        for (Map<? super K, ? super V> superMap : superMaps) {
+        for (final Map<? super K, ? super V> superMap : superMaps) {
             superMap.put(key, value);
         }
         return true;
     }
     
     @Override
-    public boolean remove(Object obj) {
-        for (Collection<? super V> superValueColl : superValueColls) {
+    public boolean remove(final Object obj) {
+        for (final Collection<? super V> superValueColl : superValueColls) {
             superValueColl.remove(obj);
         }
         return super.remove(obj);
     }
     
-    public void linkMap(Map<? super K, ? super V> superMap) {
+    public void linkMap(final Map<? super K, ? super V> superMap) {
         superMaps.add(superMap);
     }
     

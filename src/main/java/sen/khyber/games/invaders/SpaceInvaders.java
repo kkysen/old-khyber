@@ -1,5 +1,9 @@
 package sen.khyber.games.invaders;
 
+import sen.khyber.tuples.Pair;
+import sen.khyber.util.SuperList;
+import sen.khyber.util.SuperListMapMixin;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -10,9 +14,6 @@ import java.util.function.Consumer;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.core.PVector;
-import sen.khyber.tuples.Pair;
-import sen.khyber.util.SuperList;
-import sen.khyber.util.SuperListMapMixin;
 
 /**
  * 

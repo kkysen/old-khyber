@@ -1,40 +1,43 @@
 package sen.khyber.optimization.sa;
 
-import java.util.Random;
-
 import sen.khyber.optimization.continuous.Rastrigin;
 
+import java.util.Random;
+
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class SimulatedAnnealer {
     
     private static Random random = new Random();
-    private State state;
+    private final State state;
     private double energy;
     public State minState;
     public double minEnergy;
     private double nextEnergy;
     private double temperature;
-    private double decayRate;
+    private final double decayRate;
     
-    public SimulatedAnnealer(State initState, double initTemp, double decayRate) {
+    public SimulatedAnnealer(final State initState, final double initTemp, final double decayRate) {
         state = initState;
         energy = initState.energy();
-        minState = (State) state.clone();
+        minState = state.clone();
         minEnergy = energy;
         temperature = initTemp;
         this.decayRate = decayRate;
     }
     
-    public SimulatedAnnealer(State initState) {
+    public SimulatedAnnealer(final State initState) {
         this(initState, 1, .99999);
     }
     
     private boolean metropolis() {
-        return random.nextDouble() 
-            < Math.exp((energy - nextEnergy)
-                       / temperature);
+        return random.nextDouble() < Math.exp((energy - nextEnergy) / temperature);
     }
     
-    public SimulatedAnnealer search(int iterations) {
+    public SimulatedAnnealer search(final int iterations) {
         for (int i = 0; i < iterations; i++) {
             //if (i % 100000 == 0) {System.out.println(minEnergy + "\t" + energy);
             state.step();
@@ -42,11 +45,12 @@ public class SimulatedAnnealer {
             if (nextEnergy <= energy || metropolis()) {
                 energy = nextEnergy;
                 if (nextEnergy < minEnergy) {
-                    minState = (State) state.clone();
+                    minState = state.clone();
                     minEnergy = nextEnergy;
                 }
-            } 
-            else state.undo();
+            } else {
+                state.undo();
+            }
             temperature *= decayRate;
         }
         return this;
@@ -56,7 +60,7 @@ public class SimulatedAnnealer {
         return search(1000000);
     }
     
-    public SimulatedAnnealer search(int base, int index) {
+    public SimulatedAnnealer search(final int base, final int index) {
         return search((int) Math.pow(base, index));
     }
     
@@ -65,8 +69,8 @@ public class SimulatedAnnealer {
         return "{state=" + minState + ", energy=" + minEnergy + "}";
     }
     
-    public static void main(String[] args) {
-        SimulatedAnnealer annealer = new SimulatedAnnealer(new Rastrigin(1000, 1000));
+    public static void main(final String[] args) {
+        final SimulatedAnnealer annealer = new SimulatedAnnealer(new Rastrigin(1000, 1000));
         for (int i = 0; i < 10; i++) {
             System.out.println(annealer.search());
         }

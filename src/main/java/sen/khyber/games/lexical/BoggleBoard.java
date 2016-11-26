@@ -1,5 +1,10 @@
 package sen.khyber.games.lexical;
 
+import sen.khyber.language.Language;
+import sen.khyber.language.Lexicon;
+import sen.khyber.util.linkedMatrix.AdjacentLinkedMatrix;
+import sen.khyber.util.linkedMatrix.LinkedMatrix;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,11 +16,6 @@ import java.util.stream.Stream;
 import org.apache.commons.math3.util.Pair;
 
 import lombok.Setter;
-
-import sen.khyber.language.Language;
-import sen.khyber.language.Lexicon;
-import sen.khyber.util.linkedMatrix.AdjacentLinkedMatrix;
-import sen.khyber.util.linkedMatrix.LinkedMatrix;
 
 /**
  * 

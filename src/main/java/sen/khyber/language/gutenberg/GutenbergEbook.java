@@ -1,14 +1,14 @@
 package sen.khyber.language.gutenberg;
 
+import sen.khyber.io.FileLineIterator;
+import sen.khyber.io.MyFiles;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringJoiner;
-
-import sen.khyber.io.FileLineIterator;
-import sen.khyber.io.MyFiles;
 
 /**
  * represents a Gutenberg Ebook's metadata
@@ -27,29 +27,28 @@ public class GutenbergEbook {
         "Character set encoding",
     };
     
-    private static final String TEXT_START_PATTERN = 
-            "\\*\\*\\* START OF THIS PROJECT GUTENBERG EBOOK [^\\*]*\\*\\*\\*\\s*";
+    private static final String TEXT_START_PATTERN = "\\*\\*\\* START OF THIS PROJECT GUTENBERG EBOOK [^\\*]*\\*\\*\\*\\s*";
     
     private final FileLineIterator lines;
     private final String path;
     
-    private Set<String> fieldNames = new HashSet<>(Arrays.asList(FIELD_NAMES));
+    private final Set<String> fieldNames = new HashSet<>(Arrays.asList(FIELD_NAMES));
     private String fields;
     private String text;
     private boolean startedText = false;
     
-    public GutenbergEbook(Path path) {
+    public GutenbergEbook(final Path path) {
         lines = MyFiles.readLinesAsIterable(path).iterator();
         this.path = path.toAbsolutePath().toString();
     }
     
-    private static String getFieldFromLine(String line, String fieldName) {
+    private static String getFieldFromLine(String line, final String fieldName) {
         if (line.contains("[")) {
             line = line.replace("[", "").replace("]", "");
         }
         String fieldValue = line.substring(fieldName.length() + 2);
         if (fieldValue.contains("EBook")) {
-            int endIndex = fieldValue.lastIndexOf("EBook") - 1; // for space
+            final int endIndex = fieldValue.lastIndexOf("EBook") - 1; // for space
             fieldValue = fieldValue.substring(0, endIndex);
         }
         return fieldValue;
@@ -57,7 +56,7 @@ public class GutenbergEbook {
     
     //private static 
     
-    private String getFieldFromLines(String fieldName) {
+    private String getFieldFromLines(final String fieldName) {
         String line;
         while (lines.hasNext()) {
             line = lines.next();
@@ -77,8 +76,8 @@ public class GutenbergEbook {
     }
     
     private void memoizeFields() {
-        StringJoiner sj = new StringJoiner(",");
-        for (String fieldName : FIELD_NAMES) {
+        final StringJoiner sj = new StringJoiner(",");
+        for (final String fieldName : FIELD_NAMES) {
             sj.add(getFieldFromLines(fieldName));
         }
         sj.add(path);
@@ -105,7 +104,7 @@ public class GutenbergEbook {
                 }
             }
         }
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         while (lines.hasNext()) {
             sb.append(lines.next());
         }
@@ -119,10 +118,10 @@ public class GutenbergEbook {
         return text;
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         //System.out.println("*** START OF THIS PROJECT GUTENBERG EBOOK MARTIN LUTHER'S 95 THESES ***\r\n".matches(TEXT_START_PATTERN));
-        Path path = Paths.get("C:/Users/kkyse/OneDrive/CS/274.txt");
-        GutenbergEbook book = new GutenbergEbook(path);
+        final Path path = Paths.get("C:/Users/kkyse/OneDrive/CS/274.txt");
+        final GutenbergEbook book = new GutenbergEbook(path);
         System.out.println(book.getFields());
     }
     

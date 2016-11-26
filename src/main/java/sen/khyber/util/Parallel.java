@@ -1,6 +1,10 @@
 package sen.khyber.util;
 
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Parallel {
     
     private static final Runtime runtime = Runtime.getRuntime();
