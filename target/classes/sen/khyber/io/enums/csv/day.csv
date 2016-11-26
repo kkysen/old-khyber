@@ -1,8 +1,0 @@
-public String day,public int dayNumber,public boolean weekday,public String abbreviation
-Monday,1,true,Mon
-Tuesday,2,true,Tue
-Wednesday,3,true,Wed
-Thursday,4,true,Thu
-Friday,5,true,Fri
-Saturday,6,false,Sat
-Sunday,0,false,Sun
