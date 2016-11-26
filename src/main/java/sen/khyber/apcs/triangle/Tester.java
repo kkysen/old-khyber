@@ -2,9 +2,14 @@ package sen.khyber.apcs.triangle;
 
 //import org.junit.Test;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Tester {
     
-    public static void print(Object obj, Object shouldEqual) {
+    public static void print(final Object obj, final Object shouldEqual) {
         System.out.println(obj + " should be... " + shouldEqual);
     }
     
@@ -13,16 +18,16 @@ public class Tester {
         
         System.out.println("\ntesting Point...");
         
-        Point p = new Point(6, 8);
+        final Point p = new Point(6, 8);
         print(p, "(6.0, 8.0)");
         
-        Point randomPoint = Point.random();
+        final Point randomPoint = Point.random();
         System.out.println(randomPoint); // (random, random);
         
-        Point q = new Point(3, 4);
+        final Point q = new Point(3, 4);
         print(q.magnitude(), 5.0);
         
-        Point r = p.move(q);
+        final Point r = p.move(q);
         print(r, "(9.0, 12.0)");
         
         print(q.equals(q.move(0.00001, 0)), true);
@@ -38,11 +43,11 @@ public class Tester {
         
         System.out.println("\ntesting Triangle1...");
         
-        Point a = new Point(0, 0);
-        Point b = new Point(0, 7);
-        Point c = new Point(24, 0);
+        final Point a = new Point(0, 0);
+        final Point b = new Point(0, 7);
+        final Point c = new Point(24, 0);
         
-        Triangle abc = new Triangle(a, b, c);
+        final Triangle abc = new Triangle(a, b, c);
         
         print(abc.isRight(), true);
         
@@ -54,9 +59,9 @@ public class Tester {
         
         abc.draw();
         
-        Point d = new Point(0, 100);
+        final Point d = new Point(0, 100);
         
-        Triangle abd = new Triangle(a, b, d);
+        final Triangle abd = new Triangle(a, b, d);
         abd.draw();
         System.out.println(abd.getArea() + " == " + abd.getHeronsArea());
         
@@ -67,7 +72,7 @@ public class Tester {
         
         System.out.println("\ntesting Triangle2...");
         
-        Triangle rand = Triangle.random();
+        final Triangle rand = Triangle.random();
         System.out.println(rand);
         
         /*
@@ -91,27 +96,27 @@ public class Tester {
         
     }
     
-    private static void assertEquals(double a, double b) {
+    private static void assertEquals(final double a, final double b) {
         if (Math.abs(a - b) > 0.0000001) {
             throw new AssertionError(a + " != " + b);
         }
     }
     
-    public static void testManyTriangles(int numTests) {
+    public static void testManyTriangles(final int numTests) {
         for (int i = 0; i < numTests; i++) {
             System.out.println("testing triangle #" + i);
-            Triangle tri = Triangle.random();
+            final Triangle tri = Triangle.random();
             assertEquals(tri.getArea(), tri.getHeronsArea());
         }
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         testPoint();
         testTriangle1();
         testTriangle2();
         testManyTriangles(100);
         
-        Polygon polygon = Polygon.random(100);
+        final Polygon polygon = Polygon.random(100);
         polygon.draw();
         System.out.println(polygon.getArea());
         

@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class MyGitSetup {
     
     private final Runtime runtime;

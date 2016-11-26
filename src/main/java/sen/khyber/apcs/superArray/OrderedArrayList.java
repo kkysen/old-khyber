@@ -7,6 +7,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @param <E> element type in the list
+ */
 public class OrderedArrayList<E extends Comparable<? super E>> extends MyArrayList<E> {
     
     public OrderedArrayList() {
@@ -41,12 +47,12 @@ public class OrderedArrayList<E extends Comparable<? super E>> extends MyArrayLi
                 return mid;
             }
         }
-        return - (lo + 1);
+        return -(lo + 1);
     }
     
     private int findIndex(final E e) {
         final int i = binarySearch(e);
-        return i < 0 ? (- i) - 1 : i;
+        return i < 0 ? (-i) - 1 : i;
     }
     
     @Override

@@ -2,7 +2,8 @@ package sen.khyber;
 
 /**
  * Hello world!
- *
+ * 
+ * @author Khyber Sen
  */
 public class App {
     

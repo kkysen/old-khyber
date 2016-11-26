@@ -1,5 +1,10 @@
 package sen.khyber.apcs.abstractClasses;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public abstract class Shape {
     
     public Shape() {}

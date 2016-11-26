@@ -6,6 +6,12 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ * @author Daniel Roz
+ */
 public class DanielRozWordSearch {
     
     private final char[][] data;
@@ -13,7 +19,8 @@ public class DanielRozWordSearch {
     private static ArrayList<String> wordsToAdd = new ArrayList<String>();
     private static ArrayList<String> wordsAdded = new ArrayList<String>();
     
-    private DanielRozWordSearch(final int rows, final int cols, final String file, final Random random) {
+    private DanielRozWordSearch(final int rows, final int cols, final String file,
+            final Random random) {
         data = new char[rows][cols];
         clear();
         randgen = random;

@@ -3,11 +3,16 @@ package sen.khyber.crypto.ciphers;
 import sen.khyber.crypto.ByteArrays;
 import sen.khyber.crypto.modes.Mode;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public abstract class BlockCipher implements Cipher {
-
-    private Mode mode;
     
-    public BlockCipher(Mode mode) {
+    private final Mode mode;
+    
+    public BlockCipher(final Mode mode) {
         this.mode = mode;
     }
     
@@ -16,15 +21,17 @@ public abstract class BlockCipher implements Cipher {
     public abstract byte[] decryptBlock(byte[] cipherBlock);
     
     @Override
-    public byte[] encrypt(byte[] plainbytes) {
-        Iterable<byte[]> cipherBlocks = mode.encrypt(ByteArrays.toBlocks(plainbytes, getBlockSize()), this::encryptBlock);
+    public byte[] encrypt(final byte[] plainbytes) {
+        final Iterable<byte[]> cipherBlocks = mode
+                .encrypt(ByteArrays.toBlocks(plainbytes, getBlockSize()), this::encryptBlock);
         return ByteArrays.concat(cipherBlocks);
     }
     
     @Override
-    public byte[] decrypt(byte[] cipherbytes) {
-        Iterable<byte[]> plainBlocks = mode.decrypt(ByteArrays.toBlocks(cipherbytes, getBlockSize()), this::decryptBlock);
+    public byte[] decrypt(final byte[] cipherbytes) {
+        final Iterable<byte[]> plainBlocks = mode
+                .decrypt(ByteArrays.toBlocks(cipherbytes, getBlockSize()), this::decryptBlock);
         return ByteArrays.concat(plainBlocks);
     }
-
+    
 }

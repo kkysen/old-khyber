@@ -3,6 +3,11 @@ package sen.khyber.games.lexical;
 import java.util.HashMap;
 import java.util.function.Function;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class PointValueFunctionMap extends PointValueMap {
     
     private Function<Integer, Integer> func;

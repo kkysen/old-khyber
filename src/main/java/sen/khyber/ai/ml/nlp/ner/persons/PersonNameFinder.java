@@ -22,11 +22,9 @@ import sen.khyber.stats.counter.WordCounter;
  */
 public class PersonNameFinder {
     
-    private static final String CAPITALIZED_WORD_PATTERN = 
-            "[A-Z][a-z]*";
+    private static final String CAPITALIZED_WORD_PATTERN = "[A-Z][a-z]*";
     
-    private static final String NAME_DATABASE_DIRECTORY = 
-            "personNameDatabases/";
+    private static final String NAME_DATABASE_DIRECTORY = "personNameDatabases/";
     
     /**
      * lookup dictionary for real names
@@ -36,18 +34,19 @@ public class PersonNameFinder {
     /**
      * creates a new PersonNameFinder based on the specified name database
      * 
-     * @param nameDatabases file paths of text files containing real human names
+     * @param nameDatabases
+     *            file paths of text files containing real human names
      */
-    public PersonNameFinder(Path... nameDatabases) {
-        for (Path nameDatabase : nameDatabases) {
+    public PersonNameFinder(final Path... nameDatabases) {
+        for (final Path nameDatabase : nameDatabases) {
             realNames.addAll(MyFilesNoExceptions.readLines(nameDatabase));
         }
     }
     
     private static Path[] getNameDatabasePaths() {
-        File nameDatabaseDirectory = new File(NAME_DATABASE_DIRECTORY);
-        File[] nameDatabaseFiles = nameDatabaseDirectory.listFiles();
-        Path[] nameDatabasePaths = new Path[nameDatabaseFiles.length];
+        final File nameDatabaseDirectory = new File(NAME_DATABASE_DIRECTORY);
+        final File[] nameDatabaseFiles = nameDatabaseDirectory.listFiles();
+        final Path[] nameDatabasePaths = new Path[nameDatabaseFiles.length];
         for (int i = 0; i < nameDatabaseFiles.length; i++) {
             nameDatabasePaths[i] = Paths.get(nameDatabaseFiles[i].toURI());
         }
@@ -58,15 +57,14 @@ public class PersonNameFinder {
         this(getNameDatabasePaths());
     }
     
-    public boolean isName(String nameCandidate) {
+    public boolean isName(final String nameCandidate) {
         return realNames.contains(nameCandidate);
     }
     
-    public List<String> findNames(CharSequence text) {
-        List<String> nameCandidates = 
-                RegexUtils.findMatches(text, CAPITALIZED_WORD_PATTERN);
-        List<String> verifiedNames = new ArrayList<>(nameCandidates.size() / 4);
-        for (String nameCandidate : nameCandidates) {
+    public List<String> findNames(final CharSequence text) {
+        final List<String> nameCandidates = RegexUtils.findMatches(text, CAPITALIZED_WORD_PATTERN);
+        final List<String> verifiedNames = new ArrayList<>(nameCandidates.size() / 4);
+        for (final String nameCandidate : nameCandidates) {
             if (realNames.contains(nameCandidate)) {
                 verifiedNames.add(nameCandidate);
             }
@@ -74,8 +72,8 @@ public class PersonNameFinder {
         return verifiedNames;
     }
     
-    public void filter(Iterable<String> nameCandidates) {
-        Iterator<String> iter = nameCandidates.iterator();
+    public void filter(final Iterable<String> nameCandidates) {
+        final Iterator<String> iter = nameCandidates.iterator();
         while (iter.hasNext()) {
             if (!realNames.contains(iter.next())) {
                 iter.remove();
@@ -84,21 +82,21 @@ public class PersonNameFinder {
     }
     
     public static void lesMiserablesTest() throws IOException {
-        Path path = Paths.get("C:/Users/kkyse/OneDrive/CS/Eclipse/git/Khyber/"
+        final Path path = Paths.get("C:/Users/kkyse/OneDrive/CS/Eclipse/git/Khyber/"
                 + "personNameDatabases/CSV_Database_of_First_Names.csv");
-        PersonNameFinder nameFinder = new PersonNameFinder(path);
-        String text = MyFiles.read(Paths.get("Les Miserables.txt"));
+        final PersonNameFinder nameFinder = new PersonNameFinder(path);
+        final String text = MyFiles.read(Paths.get("Les Miserables.txt"));
         //List<String> names = nameFinder.findNames(text);
         //WordCounter counter = new WordCounter(names);
         //counter.sortedCounts().forEach(System.out::println);
-        WordCounter counter = new WordCounter();
+        final WordCounter counter = new WordCounter();
         //counter.setAllLowerCase(false);
         counter.addWords(text);
         nameFinder.filter(counter);
         counter.mostCommonCounts().forEach(System.out::println);
         System.out.println(counter.mostCommonCounts(100));
         System.out.println();
-        WordCounter lesMiserables = new WordCounter();
+        final WordCounter lesMiserables = new WordCounter();
         lesMiserables.add(text);
         //lesMiserables.retainIf(s -> s.length() > 10);
         System.out.println(lesMiserables.mostCommonCounts(100));
@@ -106,7 +104,7 @@ public class PersonNameFinder {
         lesMiserables.mostCommonPercentages(10).forEach(System.out::println);
     }
     
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         lesMiserablesTest();
     }
     

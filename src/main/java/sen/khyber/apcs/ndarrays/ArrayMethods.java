@@ -2,6 +2,11 @@ package sen.khyber.apcs.ndarrays;
 
 import java.util.Arrays;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class ArrayMethods {
     
     public static int rowSum(final int[][] a, final int i) {

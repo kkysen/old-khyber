@@ -2,7 +2,11 @@ package sen.khyber.apcs.superArray;
 
 import java.util.Collection;
 
-
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class SuperArray extends MyArrayList<String> {
     
     public SuperArray(final int initialCapacity) {

@@ -1,5 +1,10 @@
 package sen.khyber.crypto.ciphers;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public interface Cipher {
     
     public default int getBlockSize() {

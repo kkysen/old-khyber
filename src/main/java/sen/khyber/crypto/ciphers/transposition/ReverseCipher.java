@@ -2,26 +2,31 @@ package sen.khyber.crypto.ciphers.transposition;
 
 import sen.khyber.crypto.ByteArrays;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class ReverseCipher implements TranspositionCipher {
-
+    
     public ReverseCipher() {}
-
+    
     @Override
-    public byte[] encrypt(byte[] plainbytes) {
+    public byte[] encrypt(final byte[] plainbytes) {
         return ByteArrays.reverse(plainbytes);
     }
-
+    
     @Override
-    public byte[] decrypt(byte[] cipherbytes) {
+    public byte[] decrypt(final byte[] cipherbytes) {
         return ByteArrays.reverse(cipherbytes);
     }
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         
-        ReverseCipher reverser = new ReverseCipher();
-        byte[] plainIn = "Hello, world".getBytes();
-        byte[] cipherbytes = reverser.encrypt(plainIn);
-        byte[] plainOut = reverser.decrypt(cipherbytes);
+        final ReverseCipher reverser = new ReverseCipher();
+        final byte[] plainIn = "Hello, world".getBytes();
+        final byte[] cipherbytes = reverser.encrypt(plainIn);
+        final byte[] plainOut = reverser.decrypt(cipherbytes);
         
         System.out.println(new String(plainIn));
         System.out.println();
@@ -32,5 +37,5 @@ public class ReverseCipher implements TranspositionCipher {
         System.out.println(new String(plainOut));
         System.out.println();
     }
-
+    
 }

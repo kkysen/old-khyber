@@ -15,8 +15,7 @@ import java.util.StringJoiner;
  * but the basic ArrayList / List methods are all implemented
  * 
  * @author Khyber Sen
- * @param <E>
- *            type of element in this List
+ * @param <E> type of element in this List
  */
 public class MyArrayList<E> implements List<E> {
     

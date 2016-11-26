@@ -27,23 +27,22 @@ public class NERs {
     
     private static final CRFClassifier<CoreLabel> DEFAULT_CLASSIFIER;
     static {
-        DEFAULT_CLASSIFIER = 
-                CRFClassifier.getClassifierNoExceptions(CLASSIFIER_DIRECTORY + 
-                        "english.conll.4class.distsim.crf.ser.gz");
+        DEFAULT_CLASSIFIER = CRFClassifier.getClassifierNoExceptions(CLASSIFIER_DIRECTORY +
+                "english.conll.4class.distsim.crf.ser.gz");
     }
     
     private static final List<CRFClassifier<CoreLabel>> CLASSIFIERS;
     static {
-        File classifierDirectory = new File(CLASSIFIER_DIRECTORY);
-        File[] classifierFiles = classifierDirectory.listFiles();
+        final File classifierDirectory = new File(CLASSIFIER_DIRECTORY);
+        final File[] classifierFiles = classifierDirectory.listFiles();
         CLASSIFIERS = new ArrayList<>();
-        for (File file : classifierFiles) {
+        for (final File file : classifierFiles) {
             if (file.isFile()) {
-                String fileName = file.getAbsolutePath();
+                final String fileName = file.getAbsolutePath();
                 CRFClassifier<CoreLabel> classifier = null;
                 try {
                     classifier = CRFClassifier.getClassifierNoExceptions(fileName);
-                } catch (Exception e) {
+                } catch (final Exception e) {
                     e.printStackTrace();
                 }
                 CLASSIFIERS.add(classifier);
@@ -55,21 +54,21 @@ public class NERs {
         return CLASSIFIERS;
     }
     
-    public static Map<String, Set<String>> identifyNers(String text, 
-            CRFClassifier<CoreLabel> classifier) {
-        Map<String, Set<String>> ners = new LinkedHashMap<>();
-        List<List<CoreLabel>> classify = classifier.classify(text);
-        for (List<CoreLabel> coreLabels : classify) {
-            for (CoreLabel coreLabel : coreLabels) {
-                String word = coreLabel.word();
-                String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
-                if (! category.equals("0")) {
+    public static Map<String, Set<String>> identifyNers(final String text,
+            final CRFClassifier<CoreLabel> classifier) {
+        final Map<String, Set<String>> ners = new LinkedHashMap<>();
+        final List<List<CoreLabel>> classify = classifier.classify(text);
+        for (final List<CoreLabel> coreLabels : classify) {
+            for (final CoreLabel coreLabel : coreLabels) {
+                final String word = coreLabel.word();
+                final String category = coreLabel.get(CoreAnnotations.AnswerAnnotation.class);
+                if (!category.equals("0")) {
                     if (ners.containsKey(category)) {
                         // key is already their, 
                         // just insert into already existing LinkedHashSet
                         ners.get(category).add(word);
                     } else {
-                        Set<String> temp = new LinkedHashSet<>();
+                        final Set<String> temp = new LinkedHashSet<>();
                         temp.add(word);
                         ners.put(category, temp);
                     }
@@ -80,19 +79,19 @@ public class NERs {
         return ners;
     }
     
-    public static Map<String, Set<String>> identifyNers(String text) {
-        return identifyNers(text,DEFAULT_CLASSIFIER);
+    public static Map<String, Set<String>> identifyNers(final String text) {
+        return identifyNers(text, DEFAULT_CLASSIFIER);
     }
     
-    public static Set<String> identifyPersons(String text) {
-        Map<String, Set<String>> ners = identifyNers(text);
-        Set<String> persons = ners.getOrDefault("PERSON", new HashSet<>());
-        Set<String> organizations = ners.getOrDefault("ORGANIZATION", new HashSet<>());
+    public static Set<String> identifyPersons(final String text) {
+        final Map<String, Set<String>> ners = identifyNers(text);
+        final Set<String> persons = ners.getOrDefault("PERSON", new HashSet<>());
+        final Set<String> organizations = ners.getOrDefault("ORGANIZATION", new HashSet<>());
         persons.addAll(organizations);
         return persons;
     }
     
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         /*String content = "Under the presidency of George Washington, Alexander "
                 + "Hamilton and Thomas Jefferson began to marshall their "
                 + "opposing forces into political parties: the Federalist and "
@@ -112,10 +111,10 @@ public class NERs {
                 + "people will be well informed and will create a pure and "
                 + "perpetual democracy (Spirit 208).";*/
         //String content = "Ariel Merida Cinderella";
-        String content = MyFiles.read(Paths.get("Les Miserables.txt")).substring(0, 100000);
+        final String content = MyFiles.read(Paths.get("Les Miserables.txt")).substring(0, 100000);
         //identifyNers(content).entrySet().forEach(System.out::println);
         //identifyPersons(content).forEach(System.out::println);
-        for (CRFClassifier classifier : getClassifiers()) {
+        for (final CRFClassifier classifier : getClassifiers()) {
             if (classifier != null) {
                 System.out.print(classifier);
                 identifyNers(content, classifier).entrySet().forEach(System.out::println);

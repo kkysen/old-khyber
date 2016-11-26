@@ -8,11 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class WordSearchTest {
     
     public static void allEnglishWordsTest() throws IOException {
         final Path path = Paths.get("src/sen.khyber.language/lexicons/english.txt");
-        final List<String> words = Files.lines(path).filter(s -> s.matches("[a-z]*")).collect(Collectors.toList());
+        final List<String> words = Files.lines(path).filter(s -> s.matches("[a-z]*"))
+                .collect(Collectors.toList());
         final WordSearch wordSearch = new WordSearch(5000, 5000, words, 1234567890987654321L);
         final List<String> outLines = wordSearch.findPrintableWords();
         outLines.add(0, "\n\n");

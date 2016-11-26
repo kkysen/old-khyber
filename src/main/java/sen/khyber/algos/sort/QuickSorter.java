@@ -5,6 +5,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class QuickSorter {
     
     public static boolean[] sort(final boolean[] arr) {
@@ -234,7 +239,8 @@ public class QuickSorter {
         return arr;
     }
     
-    private static <T extends Comparable<? super T>> void sort(final T[] arr, final int left, final int right) {
+    private static <T extends Comparable<? super T>> void sort(final T[] arr, final int left,
+            final int right) {
         int i = left, j = right;
         final T pivot = arr[(i + j) / 2];
         T temp;
@@ -264,7 +270,8 @@ public class QuickSorter {
         return arr;
     }
     
-    public static <T extends Comparable<? super T>> void sort(final List<T> list, final int left, final int right) {
+    public static <T extends Comparable<? super T>> void sort(final List<T> list, final int left,
+            final int right) {
         int i = left, j = right;
         final T pivot = list.get((i + j) / 2);
         T temp;
@@ -289,7 +296,8 @@ public class QuickSorter {
         }
     }
     
-    public static <T extends Comparable<? super T>> List<T> sort(final Collection<? extends T> coll) {
+    public static <T extends Comparable<? super T>> List<T> sort(
+            final Collection<? extends T> coll) {
         final List<T> list = new ArrayList<>(coll);
         sort(list, 0, list.size() - 1);
         return list;

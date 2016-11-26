@@ -6,6 +6,11 @@ import lombok.Getter;
 
 import sen.khyber.reflect.Reflect;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Student {
     
     private static final Random random = new Random();
@@ -17,7 +22,7 @@ public class Student {
     private final @Getter int age;
     private double gpa = STARTING_GPA;
     
-    public Student(String firstName, String lastName, int osis, int age) {
+    public Student(final String firstName, final String lastName, final int osis, final int age) {
         this.firstName = firstName;
         this.lastName = lastName;
         if (String.valueOf(osis).length() == 9) {
@@ -32,15 +37,15 @@ public class Student {
         }
     }
     
-    public Student(String firstName, String lastName, int osis) {
+    public Student(final String firstName, final String lastName, final int osis) {
         this(firstName, lastName, osis, random.nextInt(4) + 12);
     }
     
-    public Student(String firstName, String lastName, String osis, int age) {
+    public Student(final String firstName, final String lastName, final String osis, final int age) {
         this(firstName, lastName, Integer.parseInt(osis), age);
     }
     
-    public Student(String firstName, String lastName, String osis) {
+    public Student(final String firstName, final String lastName, final String osis) {
         this(firstName, lastName, Integer.parseInt(osis));
     }
     
@@ -67,7 +72,7 @@ public class Student {
         return Reflect.toString(Student.class, this);
     }
     
-    public void printStudent(String message) {
+    public void printStudent(final String message) {
         System.out.println(message + ": " + this);
     }
     
@@ -75,7 +80,7 @@ public class Student {
         printStudent("");
     }
     
-    public void raiseGPA(double d) {
+    public void raiseGPA(final double d) {
         if (d < 0) {
             throw new IllegalArgumentException("cannot be raised by a negative");
         } else if (gpa + d < 100) {
@@ -84,7 +89,7 @@ public class Student {
         gpa += d;
     }
     
-    public void lowerGPA(double d) {
+    public void lowerGPA(final double d) {
         if (d < 0) {
             throw new IllegalArgumentException("cannot be lowered by a negative");
         } else if (gpa - d < 0) {
@@ -101,9 +106,9 @@ public class Student {
         gpa -= random.nextDouble() * gpa;
     }
     
-    public static void main(String[] args) {
-        Student me = new Student("Khyber", "Sen", 205312234, 16);
-        int numIters = (args.length == 1) ? Integer.parseInt(args[0]) : 10;
+    public static void main(final String[] args) {
+        final Student me = new Student("Khyber", "Sen", 205312234, 16);
+        final int numIters = args.length == 1 ? Integer.parseInt(args[0]) : 10;
         for (int i = 0; i < numIters; i++) {
             me.lowerGPA();
             me.printStudent("lowered");

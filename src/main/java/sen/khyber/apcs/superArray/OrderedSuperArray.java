@@ -3,6 +3,11 @@ package sen.khyber.apcs.superArray;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class OrderedSuperArray extends OrderedArrayList<String> {
     
     public OrderedSuperArray() {}

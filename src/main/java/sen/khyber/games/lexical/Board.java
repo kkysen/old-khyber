@@ -28,6 +28,11 @@ import sen.khyber.util.linkedMatrix.LinkedMatrix;
  * add mutation methods
  */
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Board implements Cloneable {
     
     @SuppressWarnings("unchecked")

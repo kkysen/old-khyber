@@ -1,5 +1,10 @@
 package sen.khyber.apcs.abstractClasses;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Square extends Rectangle {
     
     public Square(final double length) {

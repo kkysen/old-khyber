@@ -5,6 +5,11 @@ import java.util.Map;
 
 import lombok.Getter;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public abstract class PointValueMap implements Cloneable {
     
     protected @Getter int minLength;

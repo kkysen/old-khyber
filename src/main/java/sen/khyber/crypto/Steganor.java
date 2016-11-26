@@ -7,6 +7,11 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.StringJoiner;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Steganor {
     
     private static final Charset charset = StandardCharsets.UTF_8;
@@ -15,63 +20,63 @@ public class Steganor {
     // & 0xFE clears last bit
     // | 1 or | 0 sets last bit to 1 or 0
     
-    public static void print(byte[] bytes) {
+    public static void print(final byte[] bytes) {
         System.out.println(Arrays.toString(bytes));
     }
     
     private static final Random random = new Random();
     
-    private byte[] text;
+    private final byte[] text;
     
-    public Steganor(byte[] text) {
+    public Steganor(final byte[] text) {
         this.text = text;
     }
     
-    public Steganor(String text) {
+    public Steganor(final String text) {
         this(text.getBytes(charset));
     }
     
     @Override
     public String toString() {
         //return Arrays.toString(text);
-        byte[] bytes = text;
-        StringJoiner js = new StringJoiner(", ", "{", "}");
+        final byte[] bytes = text;
+        final StringJoiner js = new StringJoiner(", ", "{", "}");
         for (int i = 0; i < bytes.length; i++) {
             js.add(i + "=" + bytes[i]);
         }
         return js.toString();
     }
     
-    private int genMessageOffset(int length) {
-        return random.nextInt(text.length - (length * 8));
+    private int genMessageOffset(final int length) {
+        return random.nextInt(text.length - length * 8);
     }
     
     private int genIntOffset() {
         return genMessageOffset(4);
     }
     
-    private static byte[] intToBytes(int i) {
+    private static byte[] intToBytes(final int i) {
         return ByteBuffer.allocate(4).putInt(i).array();
     }
     
-    private static int bytesToInt(byte[] bytes) {
+    private static int bytesToInt(final byte[] bytes) {
         return ByteBuffer.wrap(bytes).getInt();
     }
     
-    public void flipBits(byte[] message, int offset) {
+    public void flipBits(final byte[] message, int offset) {
         for (int i = 0; i < message.length; i++) {
-            byte byteToAdd = message[i];
+            final byte byteToAdd = message[i];
             for (int bitNum = 7; bitNum >= 0; bitNum--, offset++) {
-                int bitToAdd = (byteToAdd >>> bitNum) & 1;
-                message[i] = (byte) ((message[i] << 1) | text[offset] & 1);
-                text[offset] = (byte) ((text[offset] & 0xFE) | bitToAdd);
+                final int bitToAdd = byteToAdd >>> bitNum & 1;
+                message[i] = (byte) (message[i] << 1 | text[offset] & 1);
+                text[offset] = (byte) (text[offset] & 0xFE | bitToAdd);
             }
         }
     }
     
-    public int hideInt(byte[] iBytes) {
+    public int hideInt(final byte[] iBytes) {
         System.out.println(Arrays.toString(iBytes));
-        int offset = genIntOffset();
+        final int offset = genIntOffset();
         flipBits(iBytes, offset);
         return offset;
     }
@@ -94,22 +99,22 @@ public class Steganor {
         return iBytes converted to int
     */
     
-    public void findInt(byte[] iBytes) {
+    public void findInt(final byte[] iBytes) {
         System.out.println(Arrays.toString(iBytes));
-        int offset = bytesToInt(iBytes);
+        final int offset = bytesToInt(iBytes);
         flipBits(iBytes, offset);
     }
     
-    public int hideInt(int offset, int numIters) {
-        byte[] iBytes = intToBytes(offset);
+    public int hideInt(int offset, final int numIters) {
+        final byte[] iBytes = intToBytes(offset);
         for (int i = 0; i < numIters; i++) {
             offset = hideInt(iBytes);
         }
         return bytesToInt(iBytes);
     }
     
-    public int findInt(int offset, int numIters) {
-        byte[] iBytes = intToBytes(offset);
+    public int findInt(final int offset, final int numIters) {
+        final byte[] iBytes = intToBytes(offset);
         for (int i = 0; i < numIters; i++) {
             findInt(iBytes);
         }
@@ -225,8 +230,8 @@ public class Steganor {
         return find(offsets[0], offsets[1], offsets[2]);
     }*/
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         
     }
-
+    
 }

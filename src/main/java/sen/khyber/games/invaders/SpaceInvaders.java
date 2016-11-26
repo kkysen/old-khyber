@@ -14,6 +14,11 @@ import sen.khyber.tuples.Pair;
 import sen.khyber.util.SuperList;
 import sen.khyber.util.SuperListMapMixin;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class SpaceInvaders extends PApplet {
     
     private static final int WIDTH = 1200;
@@ -29,24 +34,24 @@ public class SpaceInvaders extends PApplet {
     
     private static String SPRITE_DIRECTORY = "src/games/invaders/sprites/";
     
-    private List<Agent> friendlyTargets = new ArrayList<>();
-    private Map<Integer, Player> playerIdMap = new HashMap<>();
+    private final List<Agent> friendlyTargets = new ArrayList<>();
+    private final Map<Integer, Player> playerIdMap = new HashMap<>();
     
     // see SuperListMapMixin for more info
     // extends SuperList
     // extra method addWithKey(key, value) that adds value to list
     // and also adds key, value pair to map
     // remove is overloaded to remove the value from the list and map
-    private SuperListMapMixin<Integer, Player> players = new SuperListMapMixin<>(
+    private final SuperListMapMixin<Integer, Player> players = new SuperListMapMixin<>(
             Arrays.asList(friendlyTargets),
             Arrays.asList(playerIdMap));
     
-    private List<Agent> enemyTargets = new ArrayList<>();
-    private List<Enemy> enemies = new SuperList<>(enemyTargets);
+    private final List<Agent> enemyTargets = new ArrayList<>();
+    private final List<Enemy> enemies = new SuperList<>(enemyTargets);
     // SuperList overloads add to also add everything to another list
     
-    private List<Missile> playerMissiles = new ArrayList<>();
-    private List<Missile> enemyMissiles = new SuperList<>(enemyTargets);
+    private final List<Missile> playerMissiles = new ArrayList<>();
+    private final List<Missile> enemyMissiles = new SuperList<>(enemyTargets);
     
     private Sprite playerMouse;
     private Sprite catShipA;
@@ -60,7 +65,7 @@ public class SpaceInvaders extends PApplet {
     }
     
     @Override
-    public PImage loadImage(String filename) {
+    public PImage loadImage(final String filename) {
         return super.loadImage(SPRITE_DIRECTORY + filename);
     }
     
@@ -75,8 +80,8 @@ public class SpaceInvaders extends PApplet {
         cheeseMissile = new Sprite("CheeseMissile.png", 30, 35);
         bossMissile = new Sprite("BossMissile.png", 30, 35);
         
-        Player arrowPlayer = new Player(width / 2.0f, height - 70);
-        Player awsdPlayer = new Player(width / 2.0f + 20, height - 70);
+        final Player arrowPlayer = new Player(width / 2.0f, height - 70);
+        final Player awsdPlayer = new Player(width / 2.0f + 20, height - 70);
         
         players.addWithKey(1, arrowPlayer);
         players.addWithKey(2, awsdPlayer);
@@ -84,12 +89,12 @@ public class SpaceInvaders extends PApplet {
         // add enemies to the game
         // add catShipA enemies
         for (int i = 0; i < 8; i++) {
-            enemies.add(new Enemy(100.0f + (150 * i), 50.0f, catShipA));
+            enemies.add(new Enemy(100.0f + 150 * i, 50.0f, catShipA));
         }
         
         // add catShipB enemies
         for (int i = 0; i < 8; i++) {
-            enemies.add(new Enemy(100.0f + (150 * i), 150.0f, catShipB));
+            enemies.add(new Enemy(100.0f + 150 * i, 150.0f, catShipB));
         }
         // enemies.get(enemies.size()/2).toggleDebug();
         
@@ -114,10 +119,10 @@ public class SpaceInvaders extends PApplet {
     // removes all ships with deleteMe == true
     // updates and displays
     // runs actionAfterUpdate on the non-deleted ships
-    private static <AgentType extends Agent> void updateAgents(List<AgentType> agents, 
-            Consumer<? super AgentType> actionAfterUpdate) {
+    private static <AgentType extends Agent> void updateAgents(final List<AgentType> agents,
+            final Consumer<? super AgentType> actionAfterUpdate) {
         for (int i = agents.size() - 1; i >= 0; i--) {
-            AgentType agent = agents.get(i);
+            final AgentType agent = agents.get(i);
             if (agent.isToBeDeleted()) {
                 if (agent instanceof Player) {
                     System.out.println(agent);
@@ -130,7 +135,7 @@ public class SpaceInvaders extends PApplet {
         }
     }
     
-    private static void updateShips(List<? extends Agent> agents) {
+    private static void updateShips(final List<? extends Agent> agents) {
         updateAgents(agents, agent -> {});
     }
     
@@ -158,21 +163,20 @@ public class SpaceInvaders extends PApplet {
     
     // key press actions
     
-    private Consumer<Player> moveLeft = Player::moveLeft;
+    private final Consumer<Player> moveLeft = Player::moveLeft;
     
-    private Consumer<Player> moveRight = Player::moveRight;
+    private final Consumer<Player> moveRight = Player::moveRight;
     
-    private Consumer<Player> shoot = player -> {
+    private final Consumer<Player> shoot = player -> {
         if (player.canShoot()) {
             playerMissiles.add(player.shoot(enemyTargets));
         }
     };
     
-    private static final Map<Integer, Pair<Integer, Consumer<Player>>> keyPressActions = 
-            new HashMap<>();
+    private static final Map<Integer, Pair<Integer, Consumer<Player>>> keyPressActions = new HashMap<>();
     
-    private void addKeyPressAction(int keyCode, int id, Consumer<Player> action) {
-        Pair<Integer, Consumer<Player>> pair = new Pair<>(id, action);
+    private void addKeyPressAction(final int keyCode, final int id, final Consumer<Player> action) {
+        final Pair<Integer, Consumer<Player>> pair = new Pair<>(id, action);
         keyPressActions.put(keyCode, pair);
     }
     
@@ -180,30 +184,30 @@ public class SpaceInvaders extends PApplet {
     // action is actually a Pair of the id in the playerIdMap
     // and the actual Consumer<Player> action
     {
-        addKeyPressAction(LEFT_ARROW , 1, moveLeft);
+        addKeyPressAction(LEFT_ARROW, 1, moveLeft);
         addKeyPressAction(RIGHT_ARROW, 1, moveRight);
-        addKeyPressAction(SPACE_BAR  , 1, shoot);
-        addKeyPressAction(A_KEY      , 2, moveLeft);
-        addKeyPressAction(D_KEY      , 2, moveRight);
-        addKeyPressAction(W_KEY      , 2, shoot);
+        addKeyPressAction(SPACE_BAR, 1, shoot);
+        addKeyPressAction(A_KEY, 2, moveLeft);
+        addKeyPressAction(D_KEY, 2, moveRight);
+        addKeyPressAction(W_KEY, 2, shoot);
     }
     
     @Override
     public void keyPressed() {
         // key press actions set up to have these indices
-        Pair<Integer, Consumer<Player>> pair = keyPressActions.get(keyCode);
+        final Pair<Integer, Consumer<Player>> pair = keyPressActions.get(keyCode);
         if (pair != null) {
-            int id = pair.getFirst();
-            Consumer<Player> action = pair.getSecond();
-            Player player = playerIdMap.get(id);
+            final int id = pair.getFirst();
+            final Consumer<Player> action = pair.getSecond();
+            final Player player = playerIdMap.get(id);
             if (player != null) {
                 action.accept(player);
             }
         }
     }
     
-    public static void main(String[] passedArgs) {
-        String className = SpaceInvaders.class.getName();
+    public static void main(final String[] passedArgs) {
+        final String className = SpaceInvaders.class.getName();
         if (passedArgs != null) {
             PApplet.main(className, passedArgs);
         } else {
@@ -213,16 +217,18 @@ public class SpaceInvaders extends PApplet {
     
     public abstract class Agent {
         
-        private Sprite sprite;
-        private PVector position, velocity, acceleration;
-        private float size;
-        private float topSpeed;
+        private final Sprite sprite;
+        private final PVector position;
+        private PVector velocity;
+        private final PVector acceleration;
+        private final float size;
+        private final float topSpeed;
         private boolean rotates, debug, deleteMe;
         
         /**
          */
-        public Agent(PVector position, PVector velocity, PVector acceleration, 
-                float size, float topSpeed, Sprite spriteImg) {
+        public Agent(final PVector position, final PVector velocity, final PVector acceleration,
+                final float size, final float topSpeed, final Sprite spriteImg) {
             this.position = position;
             this.velocity = velocity;
             this.acceleration = acceleration;
@@ -255,10 +261,10 @@ public class SpaceInvaders extends PApplet {
         
         /**
          */
-        public void setAngle(float angle) {
-            float mag = velocity.mag();
-            float x = cos(angle);
-            float y = sin(angle);
+        public void setAngle(final float angle) {
+            final float mag = velocity.mag();
+            final float x = cos(angle);
+            final float y = sin(angle);
             velocity = new PVector(x, y);
             velocity.mult(mag);
         }
@@ -305,7 +311,7 @@ public class SpaceInvaders extends PApplet {
          * @param x the specified value to change position.x to
          * @param y the specified value to change position.y to
          */
-        public void setXY(float x, float y) {
+        public void setXY(final float x, final float y) {
             position.x = x;
             position.y = y;
         }
@@ -322,7 +328,7 @@ public class SpaceInvaders extends PApplet {
          * 
          * @param x the specified value to change to
          */
-        public void setX(float x) {
+        public void setX(final float x) {
             position.x = x;
         }
         
@@ -338,7 +344,7 @@ public class SpaceInvaders extends PApplet {
          * 
          * @param y the specified value to change to
          */
-        public void setY(float y) {
+        public void setY(final float y) {
             position.y = y;
         }
         
@@ -395,17 +401,17 @@ public class SpaceInvaders extends PApplet {
         public float getSpeed() {
             return velocity.mag();
         }
-
+        
         /**
          */
-        public void setSpeed(float speed) {
+        public void setSpeed(final float speed) {
             velocity.normalize();
             velocity.mult(speed);
         }
         
         /**
          */
-        public void turn(float angle) {
+        public void turn(final float angle) {
             setAngle(getAngle() + angle);
         }
         
@@ -440,13 +446,13 @@ public class SpaceInvaders extends PApplet {
             translate(position.x, position.y);
             if (debug) {
                 fill(0);
-                text("Angle: " + degrees(getAngle()) + "\n" 
+                text("Angle: " + degrees(getAngle()) + "\n"
                         + "Speed: " + getSpeed(), -20, 40);
                 text("Pos: " + position + " ", -20, 100);
                 text("Vel: " + velocity + " ", -20, 120);
                 text("Acc: " + acceleration + " ", -20, 140);
                 if (sprite != null) {
-                    text("size: " + sprite.width() + "," 
+                    text("size: " + sprite.width() + ","
                             + sprite.height(), -20, 160);
                 }
             }
@@ -512,7 +518,7 @@ public class SpaceInvaders extends PApplet {
         private int timeSinceLastMissile;
         protected Sprite myMissileSprite;
         
-        public Ship(float x, float y, Sprite img, Sprite missileImg) {
+        public Ship(final float x, final float y, final Sprite img, final Sprite missileImg) {
             super(new PVector(x, y), new PVector(0.5f, 0.0f), new PVector(0, 0),
                     100, 10, img);
             myMissileSprite = missileImg;
@@ -523,7 +529,7 @@ public class SpaceInvaders extends PApplet {
             return DEFAULT_TIME_BETWEEN_MISSILES;
         }
         
-        public boolean isHit(Missile p) {
+        public boolean isHit(final Missile p) {
             return SpaceInvaders.dist(getX(), getY(), p.getX(), p.getY()) < 50;
         }
         
@@ -537,7 +543,7 @@ public class SpaceInvaders extends PApplet {
             timeSinceLastMissile++;
         }
         
-        public void display(boolean debug) {
+        public void display(final boolean debug) {
             super.display();
             if (debug) {
                 if (canShoot()) {
@@ -560,7 +566,7 @@ public class SpaceInvaders extends PApplet {
          * shoot returns a new projectile with properties defined by the ship
          * that creates it
          */
-        public Missile shoot(List<? extends Agent> targets) {
+        public Missile shoot(final List<? extends Agent> targets) {
             return new Missile(getX(), getY() - 30, 0.0f, -5.0f,
                     myMissileSprite, targets);
         }
@@ -568,12 +574,12 @@ public class SpaceInvaders extends PApplet {
     }
     
     public class Player extends Ship {
-
-        public Player(float x, float y, Sprite img, Sprite missileImg) {
+        
+        public Player(final float x, final float y, final Sprite img, final Sprite missileImg) {
             super(x, y, img, missileImg);
         }
         
-        public Player(float x, float y) {
+        public Player(final float x, final float y) {
             this(x, y, playerMouse, cheeseMissile);
         }
         
@@ -590,11 +596,11 @@ public class SpaceInvaders extends PApplet {
     
     public class SuperPlayer extends Player {
         
-        public SuperPlayer(float x, float y, Sprite img, Sprite missileImg) {
+        public SuperPlayer(final float x, final float y, final Sprite img, final Sprite missileImg) {
             super(x, y, img, missileImg);
         }
         
-        public SuperPlayer(float x, float y) {
+        public SuperPlayer(final float x, final float y) {
             super(x, y);
         }
         
@@ -606,18 +612,18 @@ public class SpaceInvaders extends PApplet {
     }
     
     public class Enemy extends Ship {
-                
+        
         private static final float DEFAULT_MOVE_DOWN_DIST = 100;
         
         private float oldY;
         private boolean isMovingDown = false;
-
-        public Enemy(float x, float y, Sprite img, Sprite missileImg) {
+        
+        public Enemy(final float x, final float y, final Sprite img, final Sprite missileImg) {
             super(x, y, img, missileImg);
             oldY = y;
         }
         
-        public Enemy(float x, float y, Sprite img) {
+        public Enemy(final float x, final float y, final Sprite img) {
             this(x, y, img, bossMissile);
         }
         
@@ -633,7 +639,7 @@ public class SpaceInvaders extends PApplet {
         
         private void turnAtEdge() {
             if (isAtLeft()) {
-                turn(- PI / 2);
+                turn(-PI / 2);
             } else if (isAtRight()) {
                 turn(PI / 2);
             }
@@ -671,8 +677,8 @@ public class SpaceInvaders extends PApplet {
         // shoot returns a new projectile with properties defined by the ship
         // that creates it.
         @Override
-        public Missile shoot(List<? extends Agent> targets) {
-            return new Missile(getX(), getY() + 30, 0.0f, 4.0f, 
+        public Missile shoot(final List<? extends Agent> targets) {
+            return new Missile(getX(), getY() + 30, 0.0f, 4.0f,
                     myMissileSprite, targets);
         }
         
@@ -686,10 +692,10 @@ public class SpaceInvaders extends PApplet {
     
     public class Missile extends Agent {
         
-        private List<Agent> targets;
+        private final List<Agent> targets;
         
-        public Missile(float x, float y, float dx, float dy, Sprite img,
-                List<? extends Agent> targets) {
+        public Missile(final float x, final float y, final float dx, final float dy, final Sprite img,
+                final List<? extends Agent> targets) {
             super(new PVector(x, y), new PVector(dx, dy), new PVector(0, 0),
                     100, 10, img);
             this.targets = new ArrayList<>(targets);
@@ -698,9 +704,9 @@ public class SpaceInvaders extends PApplet {
         @Override
         public void update() {
             super.update();
-            for (Agent target : targets) {
-                if (!isToBeDeleted() && dist(getX(), getY(), 
-                        target.getX(), target.getY()) < 50 ) {
+            for (final Agent target : targets) {
+                if (!isToBeDeleted() && dist(getX(), getY(),
+                        target.getX(), target.getY()) < 50) {
                     target.deleteMe();
                     if (!(target instanceof Missile)) {
                         deleteMe();
@@ -724,9 +730,9 @@ public class SpaceInvaders extends PApplet {
      */
     public class Sprite {
         
-        private PImage img;
+        private final PImage img;
         
-        public Sprite(String name, int width, int height) {
+        public Sprite(final String name, final int width, final int height) {
             img = loadImage(name);
             img.resize(width, height);
         }

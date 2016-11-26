@@ -11,6 +11,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import sen.khyber.io.MyFiles;
 import sen.khyber.language.gutenberg.OneBook;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class OrderedSuperArrayTest {
     
     private static final Random random = new Random();

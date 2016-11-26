@@ -3,6 +3,11 @@ package sen.khyber.apcs.abstractClasses;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Rectangle extends Shape {
     
     private @Getter @Setter double length;

@@ -17,6 +17,11 @@ import java.util.StringJoiner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class WordSearch {
     
     // alphabet
@@ -397,7 +402,8 @@ public class WordSearch {
         }
     }
     
-    private static void checkKeyAndSeed(final boolean correctSeed, final boolean correctKey, final String[] args) {
+    private static void checkKeyAndSeed(final boolean correctSeed, final boolean correctKey,
+            final String[] args) {
         if (correctKey) {
             return;
         }

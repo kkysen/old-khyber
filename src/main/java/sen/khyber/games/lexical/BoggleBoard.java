@@ -17,6 +17,11 @@ import sen.khyber.language.Lexicon;
 import sen.khyber.util.linkedMatrix.AdjacentLinkedMatrix;
 import sen.khyber.util.linkedMatrix.LinkedMatrix;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class BoggleBoard extends Board {
     
     @SuppressWarnings("unchecked")
@@ -28,12 +33,12 @@ public class BoggleBoard extends Board {
     
     private static final PointValueMap DEFAULT_POINT_VALUE_MAP = //
             new PointValueCollectionMap(new int[][] {
-                { 3, 1 },
-                { 4, 1 },
-                { 5, 2 },
-                { 6, 3 },
-                { 7, 5 },
-                { 8, 11 }
+                {3, 1},
+                {4, 1},
+                {5, 2},
+                {6, 3},
+                {7, 5},
+                {8, 11}
             });
     
     private static final Lexicon DEFAULT_LANGUAGE = Lexicon.safe(Language.ENGLISH, true);
