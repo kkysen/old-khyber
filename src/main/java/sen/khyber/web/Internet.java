@@ -70,7 +70,7 @@ public class Internet {
         return sb.toString();
     }
     
-    /**
+    /**.....
      * returns a Jsoup Document
      * 
      * @param url URL of the website

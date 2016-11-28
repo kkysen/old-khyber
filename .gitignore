@@ -4,6 +4,7 @@
 *.project
 /.settings/
 #/target/
-scrape/
-lit/
+**/Lit.java
+src/test/java/sen/khyber/**/lit/
+target/test-classes/sen/khyber/**/lit/
 /tempHtmlPage/
