@@ -147,7 +147,8 @@ public class Internet {
                     final int arg4, final String arg5) {}
             
             @Override
-            public void warning(final String arg0, final URL arg1, final String arg2, final int arg3,
+            public void warning(final String arg0, final URL arg1, final String arg2,
+                    final int arg3,
                     final int arg4, final String arg5) {}
             
         });
