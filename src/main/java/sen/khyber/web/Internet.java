@@ -89,8 +89,7 @@ public class Internet {
             try {
                 return getDocument(url);
             } catch (final IOException e) {
-                //e.printStackTrace();
-                return Jsoup.parse("");
+                throw new RuntimeException(e);
             }
         });
     }
@@ -174,8 +173,7 @@ public class Internet {
             try {
                 return getRenderedDocument(url);
             } catch (FailingHttpStatusCodeException | IOException e) {
-                //e.printStackTrace();
-                return Jsoup.parse("");
+                throw new RuntimeException(e);
             }
         });
     }

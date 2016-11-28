@@ -5,3 +5,6 @@
 /.settings/
 #/target/
 scrape/
+lit/
+/tempHtmlPage/
+/target/
