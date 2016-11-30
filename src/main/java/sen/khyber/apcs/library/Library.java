@@ -91,7 +91,7 @@ public class Library {
      * 
      * @param args not used
      */
-    public static void main(final String args[]) {
+    public static void main(final String[] args) {
         
         final Library lib = new Library();
         
