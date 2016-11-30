@@ -21,6 +21,7 @@ public class CirculatingBook extends LibraryBook {
     public void checkout(final String patron, final String dueDate) {
         currentHolder = patron;
         this.dueDate = dueDate;
+        System.out.println("Successfully checked out " + this);
     }
     
     @Override
