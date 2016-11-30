@@ -1,8 +1,8 @@
 *.[oa]
 *.log
-*.classpath
-*.project
-/.settings/
+#*.classpath
+#*.project
+#/.settings/
 #/target/
 **/Lit.java
 src/test/java/sen/khyber/**/lit/
