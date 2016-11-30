@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ * represents a book with a title, author, and isbn
  * 
  * @author Khyber Sen
  */

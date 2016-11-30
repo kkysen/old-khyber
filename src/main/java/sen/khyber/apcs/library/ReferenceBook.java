@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ * a reference book stored in a collection that can't be checked out
  * 
  * @author Khyber Sen
  */

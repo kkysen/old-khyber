@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ * a circulating book that can be checked out by a patron until a due date
  * 
  * @author Khyber Sen
  */
@@ -18,8 +18,8 @@ public class CirculatingBook extends LibraryBook {
     }
     
     @Override
-    public void checkout(final String currentHolder, final String dueDate) {
-        this.currentHolder = currentHolder;
+    public void checkout(final String patron, final String dueDate) {
+        currentHolder = patron;
         this.dueDate = dueDate;
     }
     

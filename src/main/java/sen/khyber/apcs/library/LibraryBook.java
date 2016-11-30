@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 
+ * represents a library book comparable by its call number,
+ * and thus sortable
  * 
  * @author Khyber Sen
  */
