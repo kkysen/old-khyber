@@ -3,11 +3,12 @@ package sen.khyber.apcs.library;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.function.Consumer;
 
 public class Library {
     
-    List<LibraryBook> bookList = new ArrayList<LibraryBook>();
+    List<LibraryBook> bookList = new ArrayList<>();
     
     public Library() {}
     
@@ -25,8 +26,15 @@ public class Library {
      */
     public void printLibrary() {
         System.out.println("Listing of books in the library\n");
-        bookList.forEach(System.out::println);
+        System.out.println(this);
         System.out.println("End of book listing\n");
+    }
+    
+    @Override
+    public String toString() {
+        StringJoiner sj = new StringJoiner("\n");
+        bookList.forEach(sj::add);
+        return sj.toString();
     }
     
     /**
