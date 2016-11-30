@@ -1,22 +1,40 @@
-public abstract class LibraryBook implements Comparable<LibraryBook> {
+package sen.khyber.apcs.library;
+
+import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
+public abstract class LibraryBook extends Book implements Comparable<LibraryBook> {
     
-    protected @Getter @Setter String callNumber;
+    protected @Getter @Setter String callNum;
     
-    public LibraryBook(String title, String author, String isbn, String callNumber) {
+    public LibraryBook(final String title, final String author, final String isbn,
+            final String callNum) {
         super(title, author, isbn);
-        this.callNumber = callNumber;
+        this.callNum = callNum;
     }
     
-    public abstract void checkout();
+    public abstract void checkout(String patron, String due);
     
     public abstract void returned();
     
     public abstract String circulationStatus();
     
-    public int compareTo(LibraryBook otherBook) {
-        return callNumber.compareTo(otherBook.callNumber);
+    @Override
+    public int compareTo(final LibraryBook otherBook) {
+        return callNum.compareTo(otherBook.callNum);
     }
     
-    // TODO eclipse toString
+    @Override
+    protected void augmentToStringFields(final Map<String, Object> augmentedToStringFields) {
+        super.augmentToStringFields(augmentedToStringFields);
+        augmentedToStringFields.put("circulationStatus", circulationStatus());
+    }
     
 }

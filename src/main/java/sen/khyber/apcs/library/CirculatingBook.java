@@ -1,29 +1,40 @@
+package sen.khyber.apcs.library;
+
+import lombok.Getter;
+import lombok.Setter;
+
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class CirculatingBook extends LibraryBook {
     
     private @Getter @Setter String currentHolder = null;
     private @Getter @Setter String dueDate = null;
     
-    public CirculatingBook(String title, String author, String isbn, String callNumber) {
+    public CirculatingBook(final String title, final String author, final String isbn, final String callNumber) {
         super(title, author, isbn, callNumber);
     }
     
-    // FIXME
-    public void checkout() {
-        System.out.println("cannot check out a reference book");
-        // throw new Exception();
+    @Override
+    public void checkout(final String currentHolder, final String dueDate) {
+        this.currentHolder = currentHolder;
+        this.dueDate = dueDate;
     }
     
-    // FIXME
+    @Override
     public void returned() {
-        System.out.println("reference book could not have been checked out -- return impossible");
-        // throw new Exception();
+        currentHolder = null;
+        dueDate = null;
     }
     
-    // FIXME
+    @Override
     public String circulationStatus() {
-        return "non-circulating reference book";
+        if (currentHolder == null) {
+            return "book available on shelves";
+        }
+        return "checked out by " + currentHolder + " until " + dueDate;
     }
-    
-    // TODO eclipse generate toString
     
 }
