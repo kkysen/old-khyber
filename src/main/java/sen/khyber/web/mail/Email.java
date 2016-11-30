@@ -11,6 +11,11 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class Email {
     
     private final String host;

@@ -1,6 +1,6 @@
 package sen.khyber.apcs;
 
-import sen.khyber.reflect.Reflect;
+import sen.khyber.reflect.OldStreamingReflect;
 
 import java.util.Random;
 
@@ -69,7 +69,7 @@ public class Student {
     
     @Override
     public String toString() {
-        return Reflect.toString(Student.class, this);
+        return OldStreamingReflect.toString(Student.class, this);
     }
     
     public void printStudent(final String message) {
