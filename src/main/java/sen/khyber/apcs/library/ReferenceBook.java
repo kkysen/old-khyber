@@ -21,13 +21,13 @@ public class ReferenceBook extends LibraryBook {
     @Override
     public void checkout(final String patron, final String due) {
         System.out.println("cannot check out a reference book");
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
     
     @Override
     public void returned() {
         System.out.println("reference book could not have been checked out -- return impossible");
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
     
     @Override

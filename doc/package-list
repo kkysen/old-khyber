@@ -4,6 +4,7 @@ sen.khyber.ai.ml.nlp.ner.persons
 sen.khyber.algos.sort
 sen.khyber.apcs
 sen.khyber.apcs.abstractClasses
+sen.khyber.apcs.library
 sen.khyber.apcs.ndarrays
 sen.khyber.apcs.other
 sen.khyber.apcs.superArray
@@ -30,6 +31,7 @@ sen.khyber.io
 sen.khyber.io.enums
 sen.khyber.language
 sen.khyber.language.gutenberg
+sen.khyber.lit
 sen.khyber.math
 sen.khyber.math.geom
 sen.khyber.math.geom.polygons
@@ -47,5 +49,7 @@ sen.khyber.util
 sen.khyber.util.linkedMatrix
 sen.khyber.web
 sen.khyber.web.drivers
+sen.khyber.web.mail
+sen.khyber.web.scrape.lit
 sen.khyber.web.search.google
 sen.khyber.web.search.google.tests

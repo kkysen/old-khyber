@@ -32,8 +32,8 @@ public class Library {
     
     @Override
     public String toString() {
-        StringJoiner sj = new StringJoiner("\n");
-        bookList.forEach(sj::add);
+        final StringJoiner sj = new StringJoiner("\n");
+        bookList.forEach(book -> sj.add(book.toString()));
         return sj.toString();
     }
     
