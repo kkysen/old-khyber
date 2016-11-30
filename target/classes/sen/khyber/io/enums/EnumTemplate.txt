@@ -47,7 +47,7 @@ public enum $className {
     
     @Override
     public String toString() {
-        return Reflect.toString($className.class, this);
+        return Reflect.toString(this);
     }
     
     public static void main(String[] args) throws Exception {

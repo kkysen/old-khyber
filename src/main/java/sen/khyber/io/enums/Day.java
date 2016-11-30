@@ -30,8 +30,7 @@ public enum Day {
     public final @Getter boolean weekday;
     public final @Getter String abbreviation;
     
-    private Day(final String day, final int dayNumber, final boolean weekday,
-            final String abbreviation) {
+    private Day(final String day, final int dayNumber, final boolean weekday, final String abbreviation) {
         this.day = day;
         this.dayNumber = dayNumber;
         this.weekday = weekday;
@@ -60,7 +59,7 @@ public enum Day {
     
     @Override
     public String toString() {
-        return Reflect.toString(Day.class, this);
+        return Reflect.toString(this);
     }
     
     public static void main(final String[] args) throws Exception {

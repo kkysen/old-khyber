@@ -35,8 +35,7 @@ public enum Month {
     public final @Getter int numDays;
     public final @Getter String season;
     
-    private Month(final String month, final int monthNumber, final int numDays,
-            final String season) {
+    private Month(final String month, final int monthNumber, final int numDays, final String season) {
         this.month = month;
         this.monthNumber = monthNumber;
         this.numDays = numDays;
@@ -65,10 +64,10 @@ public enum Month {
     
     @Override
     public String toString() {
-        return Reflect.toString(Month.class, this);
+        return Reflect.toString(this);
     }
     
-    public static void main(final String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
         for (final Month month : Month.values()) {
             System.out.println(month);
         }
