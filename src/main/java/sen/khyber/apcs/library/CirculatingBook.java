@@ -13,7 +13,8 @@ public class CirculatingBook extends LibraryBook {
     private @Getter @Setter String currentHolder = null;
     private @Getter @Setter String dueDate = null;
     
-    public CirculatingBook(final String title, final String author, final String isbn, final String callNumber) {
+    public CirculatingBook(final String title, final String author, final String isbn,
+            final String callNumber) {
         super(title, author, isbn, callNumber);
     }
     

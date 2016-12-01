@@ -14,15 +14,15 @@ import lombok.Setter;
  */
 public class Book {
     
-    protected @Getter @Setter String title;
     protected @Getter @Setter String author;
+    protected @Getter @Setter String title;
     protected @Getter @Setter String isbn;
     
     public Book() {}
     
-    public Book(final String title, final String author, final String isbn) {
-        this.title = title;
+    public Book(final String author, final String title, final String isbn) {
         this.author = author;
+        this.title = title;
         this.isbn = isbn;
     }
     
