@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 import java.util.StringJoiner;
 
 /**
@@ -240,15 +241,29 @@ public class MyArrayList<E> implements List<E> {
     private class ArrayListIterator implements Iterator<E> {
         
         private int i = 0;
+        private boolean hasNextCalled = false;
         
         @Override
         public boolean hasNext() {
-            return i < size;
+            return i != size;
         }
         
         @Override
         public E next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            hasNextCalled = true;
             return data(i++);
+        }
+        
+        @Override
+        public void remove() {
+            if (i == 0 || !hasNextCalled) {
+                throw new IllegalStateException();
+            }
+            remove(--i);
+            hasNextCalled = false;
         }
         
     }
