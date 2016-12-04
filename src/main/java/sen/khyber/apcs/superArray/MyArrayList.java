@@ -28,7 +28,6 @@ public class MyArrayList<E> implements List<E> {
     
     protected Object[] data;
     
-    @SuppressWarnings("unchecked")
     public MyArrayList(final int initialCapacity) {
         if (initialCapacity < 0) {
             throw new IllegalArgumentException(
@@ -51,9 +50,6 @@ public class MyArrayList<E> implements List<E> {
         addAll(list);
     }
     
-    /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
-     */
     @Override
     public int hashCode() {
         trimToSize();
@@ -64,9 +60,6 @@ public class MyArrayList<E> implements List<E> {
         return result;
     }
     
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {
@@ -262,7 +255,7 @@ public class MyArrayList<E> implements List<E> {
             if (i == 0 || !hasNextCalled) {
                 throw new IllegalStateException();
             }
-            remove(--i);
+            MyArrayList.this.remove(--i);
             hasNextCalled = false;
         }
         
