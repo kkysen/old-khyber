@@ -1,5 +1,7 @@
 package sen.khyber.web;
 
+import sen.khyber.regex.RegexUtils;
+
 // TODO add Selenium support for rendered documents
 
 import java.io.BufferedReader;
@@ -9,6 +11,8 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -52,6 +56,20 @@ public class Internet {
      */
     private static final BrowserVersion HTML_UNIT_BROWSER_VERSION = BrowserVersion.CHROME;
     
+    private static boolean suppressedExceptions;
+    
+    public static boolean hasSuppressedExceptions() {
+        return suppressedExceptions;
+    }
+    
+    public static void suppressExceptions() {
+        suppressedExceptions = true;
+    }
+    
+    public static void unsuppressExceptions() {
+        suppressedExceptions = false;
+    }
+    
     /**
      * reads the html of a website and returns it as a String
      * 
@@ -70,7 +88,8 @@ public class Internet {
         return sb.toString();
     }
     
-    /**.....
+    /**
+     * .....
      * returns a Jsoup Document
      * 
      * @param url URL of the website
@@ -89,7 +108,11 @@ public class Internet {
             try {
                 return getDocument(url);
             } catch (final IOException e) {
-                throw new RuntimeException(e);
+                if (!suppressedExceptions) {
+                    throw new RuntimeException(e);
+                }
+                //e.printStackTrace();
+                return Jsoup.parse(""); // blank doc
             }
         });
     }
@@ -185,6 +208,65 @@ public class Internet {
     
     public static Stream<Document> getRenderedDocuments(final Collection<String> urls) {
         return getRenderedDocuments(urls.parallelStream());
+    }
+    
+    public static Stream<String> getLinkedUrls(final Document doc) {
+        return RegexUtils.findUrls(doc.html()).parallelStream();
+    }
+    
+    public static Stream<String> getLinkedUrls(final Document doc,
+            final Predicate<String> urlFilter) {
+        return getLinkedUrls(doc).filter(urlFilter);
+    }
+    
+    public static Stream<Document> getLinkedDocuments(final Document doc) {
+        return getDocuments(getLinkedUrls(doc));
+    }
+    
+    public static Stream<Document> getLinkedDocuments(final Document doc,
+            final Predicate<String> urlFilter) {
+        return getDocuments(getLinkedUrls(doc, urlFilter));
+    }
+    
+    public static Stream<Document> getLinkedRenderedDocuments(final Document doc) {
+        return getRenderedDocuments(getLinkedUrls(doc));
+    }
+    
+    public static Stream<Document> getLinkedRenderedDocuments(final Document doc,
+            final Predicate<String> urlFilter) {
+        return getRenderedDocuments(getLinkedUrls(doc, urlFilter));
+    }
+    
+    private static Stream<Document> getLinkedDocumentsUsingFunction(final Document doc, int depth,
+            final Function<Document, Stream<Document>> mapper) {
+        if (--depth < 0) {
+            throw new IllegalArgumentException("cannot be 0 or negative");
+        }
+        Stream<Document> docs = getLinkedDocuments(doc);
+        for (int i = 0; i < depth; i++) {
+            docs = docs.flatMap(mapper);
+        }
+        return docs;
+    }
+    
+    public static Stream<Document> getLinkedDocuments(final Document doc, final int depth) {
+        return getLinkedDocumentsUsingFunction(doc, depth, Internet::getLinkedDocuments);
+    }
+    
+    public static Stream<Document> getLinkedDocuments(final Document doc,
+            final Predicate<String> urlFilter, final int depth) {
+        return getLinkedDocumentsUsingFunction(doc, depth,
+                doc0 -> getLinkedDocuments(doc0, urlFilter));
+    }
+    
+    public static Stream<Document> getLinkedRenderedDocuments(final Document doc, final int depth) {
+        return getLinkedDocumentsUsingFunction(doc, depth, Internet::getLinkedRenderedDocuments);
+    }
+    
+    public static Stream<Document> getLinkedRenderedDocuments(final Document doc,
+            final Predicate<String> urlFilter, final int depth) {
+        return getLinkedDocumentsUsingFunction(doc, depth,
+                doc0 -> getLinkedRenderedDocuments(doc0, urlFilter));
     }
     
     public static void main(final String[] args) throws Exception {

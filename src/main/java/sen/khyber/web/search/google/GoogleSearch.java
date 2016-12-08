@@ -132,9 +132,7 @@ public class GoogleSearch {
     private void memoizeResults() throws IOException {
         getResultElements();
         results = new ArrayList<>(numResults);
-        for (int i = 0; i < numResults; i++) {
-            results.add(new GoogleSearchResult(resultElements.get(i)));
-        }
+        resultElements.forEach(elem -> results.add(new GoogleSearchResult(elem)));
     }
     
     /**
