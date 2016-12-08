@@ -87,7 +87,7 @@ public class LitStory implements Iterable<String> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
-            return new Double(story1.rating).compareTo(story2.rating);
+            return Double.compare(story1.rating, story2.rating);
         }
         
     }

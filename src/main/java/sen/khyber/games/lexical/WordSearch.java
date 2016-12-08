@@ -63,7 +63,7 @@ public class WordSearch {
                 // if same length, use natural order
                 return s1.compareTo(s2);
             }
-            return len2 - len1;
+            return Integer.compare(len2, len1);
         }
         
     }

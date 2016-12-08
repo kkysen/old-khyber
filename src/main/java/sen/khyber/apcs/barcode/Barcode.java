@@ -69,7 +69,7 @@ public class Barcode implements Comparable<Barcode>, Cloneable {
         return new Barcode(this);
     }
     
-    private int checkSum() {
+    public int checkSum() {
         return checkDigit;
     }
     
@@ -82,7 +82,7 @@ public class Barcode implements Comparable<Barcode>, Cloneable {
     // because for equal zips checkDigit will also be equal
     @Override
     public int compareTo(final Barcode other) {
-        return zipCode - other.zipCode;
+        return Integer.compare(zipCode, other.zipCode);
     }
     
 }
