@@ -14,16 +14,24 @@ import java.util.stream.Stream;
  */
 public class BarcodeTest {
     
-    /**
-     * @author Khyber Sen
-     */
+    private static final Random random = new Random(123456789L);
+    private static final Supplier<String> zipGenerator = //
+            () -> String.valueOf(random.nextInt()).substring(1, 6);
+    private static final Supplier<Barcode> barcodeGenerator = () -> new Barcode(zipGenerator.get());
+    
+    private static void checkBarcode(final Barcode barcode) {
+        final String code = barcode.toCode();
+        final Barcode reverse = new Barcode(code);
+        if (!barcode.toString().equals(reverse.toString())) {
+            throw new AssertionError(barcode + " != " + reverse);
+        }
+    }
+    
     private static void test1() {
-        final Random random = new Random();
-        final Supplier<Barcode> generator = () -> new Barcode(
-                String.valueOf(random.nextInt()).substring(1, 6));
-        final List<Barcode> list = Stream.generate(generator).limit(1000).collect(Collectors.toList());
+        final List<Barcode> list = Stream.generate(barcodeGenerator).limit(1000)
+                .collect(Collectors.toList());
         list.sort(null);
-        list.forEach(System.out::println);
+        list.forEach(BarcodeTest::checkBarcode);
     }
     
     /**
@@ -52,10 +60,20 @@ public class BarcodeTest {
         */
     }
     
+    private static void test3() {
+        Stream.generate(zipGenerator).limit(1000).forEach(zip -> {
+            final String code = Barcode.toCode(zip);
+            if (!zip.equals(Barcode.toZip(code))) {
+                throw new AssertionError(zip + " != " + code);
+            }
+        });
+    }
+    
     public static void main(final String[] args) {
         test1();
         System.out.println("\n\n\n");
         test2();
+        test3();
     }
     
 }

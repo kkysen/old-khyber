@@ -66,7 +66,7 @@ public class Barcode implements Comparable<Barcode> {
         digitSum -= '0' * ZIPCODE_LENGTH;
         checkSum = digitSum % 10;
         zipInt = Integer.parseInt(zipCode);
-        sb.append(ENCODING.get((char) checkSum + '0'));
+        sb.append(ENCODING.get((char) (checkSum + '0')));
         sb.append("|");
         sb.setCharAt(ZIPCODE_LENGTH, (char) (checkSum + '0'));
         barcode = sb.substring(TO_STRING_LENGTH - BARCODE_LENGTH).toString();
@@ -116,10 +116,10 @@ public class Barcode implements Comparable<Barcode> {
         }
         final int endIndex = BARCODE_LENGTH - 1;
         final String checkSumBar = barcode.substring(endIndex - BAR_LENGTH, endIndex);
-        checkSum = decodeBar(checkSumBar);
+        checkSum = decodeBar(checkSumBar) - '0';
         if (checkSum != digitSum % 10) {
             throw new IllegalArgumentException(
-                    "found checkSum=" + checkSum + " when checkSum should =" + digitSum % 10);
+                    "found checkSum=" + checkSum + " when checkSum should be " + digitSum % 10);
         }
         zipCode = sb.toString();
         zipInt = Integer.parseInt(zipCode);
@@ -132,9 +132,10 @@ public class Barcode implements Comparable<Barcode> {
             initZipCode(zipOrBarcode);
         } else if (length == BARCODE_LENGTH) {
             initBarcode(zipOrBarcode);
+        } else {
+            throw new IllegalArgumentException("must be of length " + ZIPCODE_LENGTH
+                    + " (zipCode) or " + BARCODE_LENGTH + " (barcode); given: " + length);
         }
-        throw new IllegalArgumentException("must be of length " + ZIPCODE_LENGTH + " (zipCode) or "
-                + BARCODE_LENGTH + " (barcode); given: " + length);
     }
     
     public int checkSum() {
