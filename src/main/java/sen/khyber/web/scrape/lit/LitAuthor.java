@@ -60,5 +60,10 @@ public class LitAuthor implements Iterable<LitStory> {
     public void readStories() {
         stories.forEach(LitStory::getStory);
     }
+
+    @Override
+    public String toString() {
+        return "LitAuthor [author=" + author + ", href=" + href + "]";
+    }
     
 }

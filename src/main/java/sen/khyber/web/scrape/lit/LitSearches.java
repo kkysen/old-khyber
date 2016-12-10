@@ -3,73 +3,56 @@ package sen.khyber.web.scrape.lit;
 import sen.khyber.web.Internet;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
-public class LitSearches {
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
+public abstract class LitSearches<S extends LitSearch> {
     
-    static final String URL = Lit.SEARCH_URL;
-    
-    private final Document doc;
-    private Set<LitSearch> searches;
+    protected final Document doc;
+    protected Set<S> searches;
     
     public LitSearches() throws IOException {
-        doc = Internet.getDocument(URL);
+        doc = Internet.getDocument(getUrl());
     }
     
-    private void loadSearches() {
+    protected abstract String getUrl();
+    
+    protected abstract String getFilterString();
+    
+    protected abstract Function<Element, S> getLitSearchConstructorFunction();
+    
+    protected void loadSearches() {
         if (searches != null) {
             return;
         }
         searches = doc.getElementsByTag("a")
                 .parallelStream()
-                .filter(elem -> elem.attr("href").contains("search.php?q="))
-                .map(LitSearch::new)
+                .filter(elem -> elem.attr("href").contains(getFilterString()))
+                .map(getLitSearchConstructorFunction())
                 .collect(Collectors.toSet());
     }
     
-    public Set<LitSearch> getSearchQueries() {
+    protected Stream<S> streamSearches() {
+        return doc.getElementsByTag("a")
+                .parallelStream()
+                .filter(elem -> elem.attr("href").contains(getFilterString()))
+                .map(getLitSearchConstructorFunction());
+    }
+    
+    public Set<S> getSearches() {
         loadSearches();
-        return searches;
-    }
-    
-    public Stream<LitSearch> getSearchResults() {
-        loadSearches();
-        return searches.parallelStream()
-                .peek(search -> {
-                    try {
-                        search.loadResults();
-                    } catch (final IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-    }
-    
-    public static Set<LitSearch> searchForQueries(final int numPages) {
-        final Set<LitSearch> searchQueries = ConcurrentHashMap.newKeySet();
-        Stream.generate(() -> {
-            try {
-                return new LitSearches();
-            } catch (final IOException e) {
-                throw new RuntimeException(e);
-            }
-        })
-                .limit(numPages)
-                .map(LitSearches::getSearchQueries)
-                .forEach(searchQueries::addAll);
-        return searchQueries;
-    }
-    
-    public static String searchForQueriesHtml(final int numPages) {
-        final Set<LitSearch> searches = searchForQueries(numPages);
-        return searches.parallelStream()
-                .sorted()
-                .map(LitSearch::toHtml)
-                .collect(Collectors.joining("<br>"));
+        return new HashSet<>(searches);
     }
     
 }

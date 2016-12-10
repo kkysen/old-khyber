@@ -16,6 +16,9 @@ import lombok.Getter;
 
 public class LitStory implements Iterable<String> {
     
+    // TODO
+    //private static final Map<String, Integer> CATEGORY_RANKING
+    
     public static final Comparator<LitStory> TITLE_ORDER = new TitleComparator();
     public static final Comparator<LitStory> AUTHOR_ORDER = new AuthorComparator();
     public static final Comparator<LitStory> RATING_ORDER = new RatingComparator().reversed();
@@ -36,7 +39,7 @@ public class LitStory implements Iterable<String> {
     private final List<String> pages = new ArrayList<>();
     private String story;
     
-    public LitStory(final Element fromAuthorElement, final String author, final String authorHref,
+    LitStory(final Element fromAuthorElement, final String author, final String authorHref,
             final int authorUid) {
         this.author = author;
         this.authorHref = authorHref;
@@ -52,10 +55,10 @@ public class LitStory implements Iterable<String> {
         final String ratingEtc = titleAndRatingElem.ownText();
         final String ratingString = ratingEtc.substring(ratingEtc.length() - 5,
                 ratingEtc.length() - 1);
-        rating = Double.parseDouble(ratingString);
+        rating = ratingString.contains("x") ? 0 : Double.parseDouble(ratingString);
         
         final Element descriptionElem = rowData.get(1);
-        description = descriptionElem.ownText();
+        description = descriptionElem.ownText().trim();
         
         final Element categoryElem = rowData.get(2).child(0);
         category = categoryElem.text();
@@ -111,6 +114,16 @@ public class LitStory implements Iterable<String> {
             } catch (final IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+        
+    }
+    
+    private static class CategoryComparator implements Comparator<LitStory> {
+        
+        @Override
+        public int compare(final LitStory story1, final LitStory story2) {
+            return 0;
+            // TODO
         }
         
     }

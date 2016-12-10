@@ -1,36 +1,34 @@
 package sen.khyber.web.scrape.lit;
 
-import sen.khyber.web.Internet;
-
-import java.io.IOException;
-import java.util.StringJoiner;
-import java.util.stream.Stream;
-
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import lombok.Getter;
 
-public class LitSearch implements Comparable<LitSearch> {
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
+public abstract class LitSearch implements Comparable<LitSearch> {
     
-    private final Element hyperlink;
-    private Document doc;
+    private final Element link;
     private final @Getter String query;
-    private final @Getter String url;
+    protected final @Getter String url;
+    private final String type;
     
-    private @Getter Stream<LitSearchResult> results;
-    
-    public LitSearch(final Element hyperlink) {
-        this.hyperlink = hyperlink;
-        query = hyperlink.attr("title");
-        url = hyperlink.attr("href");
+    public LitSearch(final Element link) {
+        this.link = link;
+        query = link.attr("title");
+        url = getWholeUrl(link.attr("href"));
+        type = getType();
     }
     
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (query == null ? 0 : query.hashCode());
+        result = prime * result + query.hashCode();
+        result = prime * result + getType().hashCode();
         return result;
     }
     
@@ -46,42 +44,26 @@ public class LitSearch implements Comparable<LitSearch> {
             return false;
         }
         final LitSearch other = (LitSearch) obj;
-        if (query == null) {
-            if (other.query != null) {
-                return false;
-            }
-        } else if (!query.equals(other.query)) {
-            return false;
-        }
-        return true;
+        return query.equals(other.query);
     }
     
     @Override
     public int compareTo(final LitSearch otherSearch) {
-        return query.compareTo(otherSearch.query);
+        int cmp = query.compareTo(otherSearch.query);
+        if (cmp == 0) {
+            cmp = url.compareTo(otherSearch.url);
+        }
+        return cmp;
     }
     
-    public void loadDocument() throws IOException {
-        doc = Internet.getDocument(LitSearches.URL + "/" + hyperlink.attr("href"));
-    }
+    protected abstract String getType();
     
-    public void loadResults() throws IOException {
-        loadDocument();
-        results = doc.getElementsByClass("r-56t")
-                .parallelStream()
-                .map(LitSearchResult::new);
-    }
+    protected abstract String getWholeUrl(String url);
     
-    public String resultsToHtml() {
-        final StringJoiner sj = new StringJoiner("\n");
-        getResults().map(LitSearchResult::toString).forEach(sj::add);
-        return sj.toString();
+    public String linkToHtml() {
+        return "<a href=\"" + getUrl() + "\">" + query + "</a>";
     }
-    
-    public String toHtml() {
-        return "<a href=\"" + LitSearches.URL + "/" + url + "\">" + query + "</a>";
-    }
-    
+
     @Override
     public String toString() {
         return "LitSearch [query=" + query + ", url=" + url + "]";

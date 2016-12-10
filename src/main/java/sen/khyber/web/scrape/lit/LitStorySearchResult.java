@@ -5,7 +5,7 @@ import org.jsoup.select.Elements;
 
 import lombok.Getter;
 
-public class LitSearchResult {
+public class LitStorySearchResult {
     
     private final Element searchResult;
     private final @Getter String title;
@@ -17,7 +17,7 @@ public class LitSearchResult {
     private final @Getter String categoryHref;
     private final @Getter String date;
     
-    public LitSearchResult(final Element searchResult) {
+    LitStorySearchResult(final Element searchResult) {
         this.searchResult = searchResult;
         
         final Elements links = searchResult.getElementsByTag("a");
@@ -42,7 +42,7 @@ public class LitSearchResult {
 
     @Override
     public String toString() {
-        return "LitSearchResult [title=" + title + ", storyHref=" + storyHref + ", description="
+        return "LitStorySearchResult [title=" + title + ", storyHref=" + storyHref + ", description="
                 + description + ", author=" + author + ", authorHref=" + authorHref + ", category="
                 + category + ", categoryHref=" + categoryHref + ", date=" + date + "]";
     }
