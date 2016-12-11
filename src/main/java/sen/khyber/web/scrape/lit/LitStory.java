@@ -48,6 +48,7 @@ public class LitStory implements Iterable<Document> {
     private final @Getter double rating;
     
     private final List<Document> pages = new ArrayList<>();
+    private int numPages;
     private String story;
     
     LitStory(final Element fromAuthorElement, final LitAuthor author) {
@@ -140,7 +141,7 @@ public class LitStory implements Iterable<Document> {
         return Internet.getDocument(href);
     }
     
-    public int numPages() throws IOException {
+    private int calcNumPages() throws IOException {
         if (pages.size() > 0) {
             return pages.size();
         }
@@ -148,6 +149,13 @@ public class LitStory implements Iterable<Document> {
         final Element numPagesElem = storyDoc.getElementsByClass("b-pager-pagesText").get(0);
         final String numPagesEtc = numPagesElem.text();
         return Integer.parseInt(numPagesEtc.substring(0, numPagesEtc.indexOf(' ')));
+    }
+    
+    public int numPages() throws IOException {
+        if (numPages == 0) {
+            numPages = calcNumPages();
+        }
+        return numPages;
     }
     
     public class PageIterator implements Iterator<Document> {
@@ -307,9 +315,13 @@ public class LitStory implements Iterable<Document> {
     
     @Override
     public String toString() {
-        return "LitStory [title=" + title + ", href=" + href + ", authorName=" + authorName
+        String ret = "LitStory [title=" + title + ", href=" + href + ", authorName=" + authorName
                 + ", description=" + description + ", category=" + category + ", date=" + date
-                + ", rating=" + rating + "]";
+                + ", rating=" + rating;
+        if (numPages != 0) {
+            ret += ", numPages=" + numPages;
+        }
+        return ret + "]";
     }
     
 }
