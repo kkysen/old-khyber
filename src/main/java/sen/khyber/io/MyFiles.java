@@ -1,16 +1,21 @@
 package sen.khyber.io;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.StreamSupport;
+
+import org.apache.commons.io.FileUtils;
 
 /**
  * 
@@ -20,6 +25,9 @@ import java.util.stream.StreamSupport;
 public class MyFiles {
     
     private static final Charset CHARSET = StandardCharsets.UTF_8;
+    private static final String ILLEGAL_FILE_CHARS = 
+            "\\\\" + "/" + "\\?" + "%" + "\\*"
+            + ":" + "\\|" + "\"" + "<" + ">";
     
     public static String read(final Path path) throws IOException {
         return new String(Files.readAllBytes(path), CHARSET);
@@ -108,6 +116,24 @@ public class MyFiles {
         final List<Path> paths = new ArrayList<>();
         walkDirectory(paths, dir, maxDepths);
         return paths;
+    }
+    
+    public static String fixFileName(final String fileName) {
+        return fileName.replaceAll("[" + ILLEGAL_FILE_CHARS + "]", "_");
+    }
+    
+    public static void deleteDirectory(final Path dir) throws IOException {
+        FileUtils.deleteDirectory(new File(dir.toString()));
+    }
+    
+    public static void createDirectoryOverwriting(final Path dir) throws IOException {
+        deleteDirectory(dir);
+        Files.createDirectory(dir);
+    }
+    
+    public static void main(final String[] args) throws Exception {
+        final Path path = Paths.get("C:/Users/kkyse/Desktop/lit", "stories");
+        createDirectoryOverwriting(path);
     }
     
 }

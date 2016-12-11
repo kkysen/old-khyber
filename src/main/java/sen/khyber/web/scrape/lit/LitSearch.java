@@ -11,16 +11,25 @@ import lombok.Getter;
  */
 public abstract class LitSearch implements Comparable<LitSearch> {
     
-    private final Element link;
     private final @Getter String query;
     protected final @Getter String url;
     private final String type;
     
     public LitSearch(final Element link) {
-        this.link = link;
         query = link.attr("title");
         url = getWholeUrl(link.attr("href"));
         type = getType();
+    }
+    
+    public LitSearch(final String csv) {
+        final String[] fields = csv.split(",");
+        query = fields[0];
+        url = fields[1];
+        type = fields[2];
+    }
+    
+    public String toCsv() {
+        return query + "," + url + "," + type;
     }
     
     @Override
@@ -28,7 +37,7 @@ public abstract class LitSearch implements Comparable<LitSearch> {
         final int prime = 31;
         int result = 1;
         result = prime * result + query.hashCode();
-        result = prime * result + getType().hashCode();
+        result = prime * result + type.hashCode();
         return result;
     }
     
@@ -49,11 +58,9 @@ public abstract class LitSearch implements Comparable<LitSearch> {
     
     @Override
     public int compareTo(final LitSearch otherSearch) {
-        int cmp = query.compareTo(otherSearch.query);
-        if (cmp == 0) {
-            cmp = url.compareTo(otherSearch.url);
-        }
+        final int cmp = query.compareTo(otherSearch.query);
         return cmp;
+        // TODO
     }
     
     protected abstract String getType();

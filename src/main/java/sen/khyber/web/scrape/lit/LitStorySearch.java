@@ -18,6 +18,10 @@ public class LitStorySearch extends LitSearch {
         super(link);
     }
     
+    public LitStorySearch(final String csv) {
+        super(csv);
+    }
+    
     @Override
     protected String getType() {
         return "story";

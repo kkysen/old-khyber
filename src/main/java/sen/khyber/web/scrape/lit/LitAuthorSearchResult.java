@@ -15,6 +15,10 @@ public class LitAuthorSearchResult extends LitSearch {
         super(link);
     }
     
+    public LitAuthorSearchResult(final String csv) {
+        super(csv);
+    }
+    
     @Override
     protected String getType() {
         return "author";
