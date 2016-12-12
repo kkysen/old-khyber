@@ -63,17 +63,20 @@ public class LitStories implements Iterable<LitStory> {
         this(stories, false);
     }
     
-    private static List<LitStory> authorsToStories(final Set<LitAuthorSearchResult> authorResults) {
+    private static List<LitStory> authorsToStories(final Stream<LitAuthor> authors) {
         final BiConsumer<List<LitStory>, LitAuthor> acc = //
                 (list, author) -> list.addAll(author.getStories());
         final BiConsumer<List<LitStory>, List<LitStory>> combiner = //
                 (list1, list2) -> list1.addAll(list2);
-        return LitAuthorSearch.resultsToAuthors(authorResults)
-                .collect(ArrayList<LitStory>::new, acc, combiner);
+        return authors.collect(ArrayList<LitStory>::new, acc, combiner);
+    }
+    
+    public LitStories(final Stream<LitAuthor> authors) {
+        this(authorsToStories(authors));
     }
     
     public LitStories(final Set<LitAuthorSearchResult> authorResults) {
-        this(authorsToStories(authorResults));
+        this(LitAuthorSearch.resultsToAuthors(authorResults));
     }
     
     private Map<?, List<LitStory>> groupBy(final String groupingName) {
@@ -249,6 +252,10 @@ public class LitStories implements Iterable<LitStory> {
     
     public void downloadByCategory() throws IOException {
         downloadBy("category");
+    }
+    
+    public static LitStories all() throws IOException {
+        return new LitStories(LitAuthorUidSearch.searchForAllAuthors());
     }
     
 }
