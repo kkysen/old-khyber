@@ -8,18 +8,26 @@ package sen.khyber.util;
  */
 public class Timer {
     
-    private static final long START_TIME = System.currentTimeMillis();
+    private static long START_TIME = System.nanoTime();
+    
+    public static void start() {
+        START_TIME = System.nanoTime();
+    }
     
     public static long time() {
-        return System.currentTimeMillis() - START_TIME;
+        return System.nanoTime() - START_TIME;
     }
     
     public static String timeString() {
-        return "time: " + time() / 1000.0;
+        return "time: " + time() / 1_000_000.0 + " seconds";
     }
     
     public static void printlnTime() {
         System.out.println(timeString());
+    }
+    
+    public static void printlnTime(final String message) {
+        System.out.println(message + ": " + timeString());
     }
     
     public static void printTime() {
