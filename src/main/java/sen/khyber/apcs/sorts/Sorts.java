@@ -426,13 +426,13 @@ public class Sorts {
     //    @Benchmark
     public static void test() {
         //testSort(Sorts::insertionSort, Arrays::sort, 1000000);
-        //        testSort(Sorts::insertionSort, 10);
-        //        testSort(Sorts::insertionSort, 100);
-        //        testSort(Sorts::insertionSort, 1000);
-        //        testSort(Sorts::insertionSort, 10000);
-        //        testSort(Sorts::insertionSort, 100000);
-        //        testSort(Sorts::insertionSort, 200000);
-        testSort(Arrays::parallelSort, 1_000_000_00);
+        testSort(Sorts::insertionSort, 10);
+        testSort(Sorts::insertionSort, 100);
+        testSort(Sorts::insertionSort, 1000);
+        testSort(Sorts::insertionSort, 10000);
+        testSort(Sorts::insertionSort, 100000);
+        testSort(Sorts::insertionSort, 200000);
+        //testSort(Arrays::parallelSort, 1_000_000_00);
     }
     
     public static void main(final String[] args) throws Exception {
