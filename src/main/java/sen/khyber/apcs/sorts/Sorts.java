@@ -43,6 +43,7 @@ public class Sorts {
         }
     }
     
+    @Deprecated
     public static void selectionSortInlined(final int[] a) {
         int temp;
         for (int i = 0; i < a.length - 1; i++) {
@@ -161,6 +162,7 @@ public class Sorts {
         }
     }
     
+    @Deprecated
     public static void insertionSortInlined(final int[] a) {
         for (int i = 1; i < a.length; i++) {
             final int prev = a[i];
