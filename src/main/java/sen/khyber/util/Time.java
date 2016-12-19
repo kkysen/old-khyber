@@ -7,4 +7,8 @@ package sen.khyber.util;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface Time {}
+public @interface Time {
+    
+    public int numIters() default 1;
+    
+}
