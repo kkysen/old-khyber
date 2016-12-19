@@ -181,6 +181,7 @@ public class Sorts {
         for (int i = 1; i < endIndex; i++) {
             if (prev > (prev = a[i])) {
                 swap(a, i - 1, i);
+                prev = a[i];
                 sorted = false;
             }
         }
@@ -437,7 +438,10 @@ public class Sorts {
     
     public static void main(final String[] args) throws Exception {
         //        Main.main(args);
-        test();
+//        test();
+//        test();
+//        test();
+        testSort(Sorts::bubbleSort, 20000);
         System.out.println("done");
     }
     
