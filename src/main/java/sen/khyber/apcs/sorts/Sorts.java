@@ -438,9 +438,9 @@ public class Sorts {
     
     public static void main(final String[] args) throws Exception {
         //        Main.main(args);
-//        test();
-//        test();
-//        test();
+        //        test();
+        //        test();
+        //        test();
         testSort(Sorts::bubbleSort, 20000);
         System.out.println("done");
     }
