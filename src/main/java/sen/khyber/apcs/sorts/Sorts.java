@@ -1,5 +1,7 @@
 package sen.khyber.apcs.sorts;
 
+import sen.khyber.util.MethodTimer;
+
 import java.util.Arrays;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -36,6 +38,7 @@ public class Sorts {
         return index;
     }
     
+    @SortAlgorithm(numIters = 5)
     public static void selectionSort(final int[] a) {
         final int len = a.length;
         for (int i = 0; i < len; i++) {
@@ -146,6 +149,7 @@ public class Sorts {
         shiftAndInsert(a, insertionIndex1, 1, insertionIndex2 - insertionIndex1, val1);
     }
     
+    @SortAlgorithm(numIters = 10)
     public static void insertionSort(final int[] a) {
         final int len = a.length;
         final boolean evenLen = (len & 1) == 0;
@@ -188,6 +192,7 @@ public class Sorts {
         return sorted;
     }
     
+    @SortAlgorithm(numIters = 3)
     public static void bubbleSort(final int[] a) {
         for (int i = a.length; i >= 2; i--) {
             if (bubbleSortPass(a, i)) {
@@ -221,6 +226,7 @@ public class Sorts {
         }
     }
     
+    @SortAlgorithm(numIters = 100)
     public static void quickSort(final int[] a) {
         quickSort(a, 0, a.length - 1);
     }
@@ -441,8 +447,23 @@ public class Sorts {
         //        test();
         //        test();
         //        test();
-        testSort(Sorts::bubbleSort, 20000);
+        //testSort(Sorts::bubbleSort, 20000);
+        MethodTimer.timeSortAlgorithms(Sorts.class, () -> new Random().ints(10000).toArray());
         System.out.println("done");
+    }
+
+    public static boolean isSorted(final int[] a) {
+        for (int i = 1; i < a.length; i++) {
+            if (a[i-1] > a[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    @SortAlgorithm(numIters = 1000)
+    public static void sort(final int[] a) {
+        Arrays.sort(a);
     }
     
 }

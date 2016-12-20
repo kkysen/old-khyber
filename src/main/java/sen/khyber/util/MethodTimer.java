@@ -1,18 +1,35 @@
+package sen.khyber.util;
 
+import sen.khyber.apcs.sorts.SortAlgorithm;
+import sen.khyber.apcs.sorts.Sorts;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.function.Supplier;
+
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 public class MethodTimer {
     
-    private static void timeSortAlgorithm(Method method, Supplier<int[]> arraySupplier, int iterNum) {
+    private static void timeSortAlgorithm(final Method method, final Supplier<int[]> arraySupplier,
+            final int iterNum)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
         int[] a = arraySupplier.get();
-        Type returnType = method.getGenericReturnType();
-        long startTime = System.nanoTime();
-        if (returnType.getTypeName().equals("void")) {
+        final Class<?> returnType = method.getReturnType();
+        final long startTime = System.nanoTime();
+        if (returnType.equals(Void.TYPE)) {
             method.invoke(null, a);
         } else {
-            a = method.invoke(null, a);
+            a = (int[]) method.invoke(null, a);
         }
-        long time = System.nanoTime() - startTime;
-        System.out.println("\ttime #" + iterNum + ": " + time / 1_000_000.0 + " sec");
+        final long time = System.nanoTime() - startTime;
+        System.out.println("\ttime #" + iterNum + ": " + time / 1e9 + " sec");
         if (!Sorts.isSorted(a)) {
             System.out.println("failed: " + Arrays.toString(a));
             Arrays.sort(a);
@@ -21,9 +38,10 @@ public class MethodTimer {
         }
     }
     
-    private static Annotation getAnnotation(Method method, Class<? extends Annotation> annotation) {
-        Annotation[] annotations = method.getDeclaredAnnotations();
-        for (Annotation anno : annotations) {
+    private static Annotation getAnnotation(final Method method,
+            final Class<? extends Annotation> annotation) {
+        final Annotation[] annotations = method.getDeclaredAnnotations();
+        for (final Annotation anno : annotations) {
             if (anno.annotationType().equals(annotation)) {
                 return anno;
             }
@@ -31,15 +49,17 @@ public class MethodTimer {
         return null;
     }
     
-    public static void timeSortAlgorithms(Class<?> type, Supplier<int[]> arraySupplier) {
-        Method[] methods = type.getDeclaredMethods();
-        for (Method method : methods) {
-            if (Modifier.isStatic(method.getModifiers)) {
-                Annotation annotation = getAnnotation(method, SortAlgorithm.class);
+    public static void timeSortAlgorithms(final Class<?> type, final Supplier<int[]> arraySupplier)
+            throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+        final Method[] methods = type.getDeclaredMethods();
+        for (final Method method : methods) {
+            if (Modifier.isStatic(method.getModifiers())) {
+                final SortAlgorithm annotation = (SortAlgorithm) getAnnotation(method,
+                        SortAlgorithm.class);
                 if (annotation == null) {
                     continue;
                 }
-                int numIters = annotation.numIters();
+                final int numIters = annotation.numIters();
                 System.out.println("timing " + method.getName() + " (" + numIters + " times)");
                 for (int i = 0; i < numIters; i++) {
                     timeSortAlgorithm(method, arraySupplier, i + 1);
