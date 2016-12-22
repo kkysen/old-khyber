@@ -108,6 +108,7 @@ public class TemperatureConverterGUI extends JFrame implements ActionListener {
         try {
             temperature = Double.parseDouble(originalText.getText());
         } catch (final NumberFormatException e) {
+            e.printStackTrace();
             return;
         }
         convertedText.setText(converter.apply(temperature).toString());
