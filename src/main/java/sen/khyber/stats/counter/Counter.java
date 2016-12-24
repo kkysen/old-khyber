@@ -251,7 +251,6 @@ public class Counter<T> implements Cloneable, Iterable<T> {
         System.out.println("test");
         Files.lines(path)
         .forEach(line -> {
-            System.out.println(line);
             final String[] splitLine = parseCSVLine(line);
             final T t = parser.apply(splitLine[0]);
             final int count = Integer.parseInt(splitLine[1]);
