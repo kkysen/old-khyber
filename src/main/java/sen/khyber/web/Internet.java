@@ -7,9 +7,14 @@ import sen.khyber.regex.RegexUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -17,6 +22,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.LogFactory;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -267,6 +273,14 @@ public class Internet {
             final Predicate<String> urlFilter, final int depth) {
         return getLinkedDocumentsUsingFunction(doc, depth,
                 doc0 -> getLinkedRenderedDocuments(doc0, urlFilter));
+    }
+    
+    public static void download(final String url, final Path path) throws IOException {
+        final InputStream input = new URL(url).openStream();
+        final Writer writer = Files.newBufferedWriter(path);
+        IOUtils.copy(input, writer, StandardCharsets.UTF_8);
+        input.close();
+        writer.close();
     }
     
     public static void main(final String[] args) throws Exception {
