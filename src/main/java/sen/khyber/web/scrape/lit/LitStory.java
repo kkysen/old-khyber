@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -30,12 +33,52 @@ public class LitStory implements Iterable<Document> {
         
     }*/
     
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M/d/yy");
+    
     public static final Comparator<LitStory> TITLE_ORDER = new TitleComparator();
     public static final Comparator<LitStory> AUTHOR_ORDER = new AuthorComparator();
     public static final Comparator<LitStory> RATING_ORDER = new RatingComparator().reversed();
     public static final Comparator<LitStory> DATE_ORDER = new DateComparator().reversed();
     public static final Comparator<LitStory> LENGTH_ORDER = new LengthComparator().reversed();
     public static final Comparator<LitStory> CATEGORY_ORDER = new CategoryComparator();
+    
+    // no type parameters allowed for enums
+    public static class Property<T> {
+        
+        public static final Property<String> TITLE = //
+                new Property<>(LitStory::getTitle, TITLE_ORDER);
+        
+        public static final Property<LitAuthor> AUTHOR = //
+                new Property<>(LitStory::getAuthor, AUTHOR_ORDER);
+        
+        public static final Property<String> AUTHOR_NAME = //
+                new Property<>(LitStory::getAuthorName, AUTHOR_ORDER);
+        
+        public static final Property<String> CATEGORY = //
+                new Property<>(LitStory::getCategory, CATEGORY_ORDER);
+        
+        public static final Property<Double> RATING = //
+                new Property<>(LitStory::getRating, RATING_ORDER);
+        
+        public static final Property<LocalDate> DATE = //
+                new Property<>(LitStory::getDate, DATE_ORDER);
+        
+        public static final Property<String> DATE_STRING = //
+                new Property<>(LitStory::getDateString, DATE_ORDER);
+        
+        public static final Property<Integer> LENGTH = //
+                new Property<>(LitStory::safeNumPages, LENGTH_ORDER);
+        
+        private final @Getter Function<LitStory, T> getter;
+        private final @Getter Comparator<LitStory> order;
+        
+        private Property(final Function<LitStory, T> getter,
+                final Comparator<LitStory> order) {
+            this.getter = getter;
+            this.order = order;
+        }
+        
+    }
     
     private final @Getter LitAuthor author;
     private final @Getter String authorName;
@@ -44,8 +87,12 @@ public class LitStory implements Iterable<Document> {
     private final @Getter String description;
     private final @Getter String category;
     private final @Getter String categoryHref;
-    private final @Getter String date;
+    private final @Getter LocalDate date; // FIXME
     private final @Getter double rating;
+    
+    public String getDateString() {
+        return date.format(DATE_FORMATTER);
+    }
     
     private final List<Document> pages = new ArrayList<>();
     private int numPages;
@@ -75,7 +122,7 @@ public class LitStory implements Iterable<Document> {
         categoryHref = categoryElem.attr("href");
         
         final Element dateElem = rowData.get(3);
-        date = dateElem.ownText();
+        date = LocalDate.parse(dateElem.ownText(), DATE_FORMATTER);
     }
     
     private static class TitleComparator implements Comparator<LitStory> {
@@ -109,8 +156,7 @@ public class LitStory implements Iterable<Document> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
-            // FIXME
-            return 0;
+            return story1.date.compareTo(story2.date);
         }
         
     }
@@ -156,6 +202,14 @@ public class LitStory implements Iterable<Document> {
             numPages = calcNumPages();
         }
         return numPages;
+    }
+    
+    public int safeNumPages() {
+        try {
+            return numPages();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     public class PageIterator implements Iterator<Document> {
