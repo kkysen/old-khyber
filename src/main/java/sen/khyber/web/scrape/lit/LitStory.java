@@ -15,7 +15,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -23,74 +22,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class LitStory implements Iterable<Document> {
-    
-    // TODO
-    /*private static final Map<String, Integer> CATEGORY_RANKING = new HashMap<>();
-    static {
-        
-    }*/
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M/d/yy");
     
-    private static final Comparator<LitStory> TITLE_ORDER = new TitleComparator();
-    private static final Comparator<LitStory> AUTHOR_ORDER = new AuthorComparator();
-    private static final Comparator<LitStory> RATING_ORDER = new RatingComparator().reversed();
-    private static final Comparator<LitStory> DATE_ORDER = new DateComparator().reversed();
-    private static final Comparator<LitStory> LENGTH_ORDER = new LengthComparator().reversed();
-    private static final Comparator<LitStory> CATEGORY_ORDER = new CategoryComparator();
-    
-    /**
-     * no type parameters allowed for enums
-     * 
-     * @author Khyber Sen
-     * @param <T>
-     */
-    public static final class Property<T> {
-        
-        public static final Property<String> TITLE = //
-                new Property<>(LitStory::getTitle, TITLE_ORDER);
-        
-        public static final Property<LitAuthor> AUTHOR = //
-                new Property<>(LitStory::getAuthor, AUTHOR_ORDER);
-        
-        public static final Property<String> AUTHOR_NAME = //
-                new Property<>(LitStory::getAuthorName, AUTHOR_ORDER);
-        
-        public static final Property<String> CATEGORY = //
-                new Property<>(LitStory::getCategory, CATEGORY_ORDER);
-        
-        public static final Property<Double> RATING = //
-                new Property<>(LitStory::getRating, RATING_ORDER);
-        
-        public static final Property<LocalDate> DATE = //
-                new Property<>(LitStory::getDate, DATE_ORDER);
-        
-        public static final Property<String> DATE_STRING = //
-                new Property<>(LitStory::getDateString, DATE_ORDER);
-        
-        public static final Property<Integer> LENGTH = //
-                new Property<>(LitStory::safeNumPages, LENGTH_ORDER);
-        
-        private final @Getter Function<LitStory, T> getter;
-        private final @Getter Comparator<LitStory> order;
-        
-        private Property(final Function<LitStory, T> getter,
-                final Comparator<LitStory> order) {
-            this.getter = getter;
-            this.order = order;
-        }
-        
-        /**
-         * ordered by decreasing rarity
-         */
-        public static final Property<?>[] values = {
-            TITLE, AUTHOR, AUTHOR_NAME, RATING, DATE, DATE_STRING, LENGTH, CATEGORY,
-        };
-        
-    }
+    public static final LitStory DUMMY = new LitStory(null, "authorName", "title", "href",
+            "description", "category", "categoryHref", null, -1);
     
     private final @Getter LitAuthor author;
     private final @Getter String authorName;
@@ -137,43 +79,65 @@ public class LitStory implements Iterable<Document> {
         date = LocalDate.parse(dateElem.ownText(), DATE_FORMATTER);
     }
     
-    private static class TitleComparator implements Comparator<LitStory> {
+    private static interface LitComparator<T> extends UsingLitProperty<T>, Comparator<LitStory> {}
+    
+    static class TitleComparator implements LitComparator<String> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
             return story1.title.compareTo(story2.title);
         }
         
+        @Override
+        public LitProperty<String> getProperty() {
+            return LitProperty.TITLE;
+        }
+        
     }
     
-    private static class AuthorComparator implements Comparator<LitStory> {
+    static class AuthorComparator implements LitComparator<String> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
             return story1.author.compareTo(story2.author);
         }
         
+        @Override
+        public LitProperty<String> getProperty() {
+            return LitProperty.AUTHOR_NAME;
+        }
+        
     }
     
-    private static class RatingComparator implements Comparator<LitStory> {
+    static class RatingComparator implements LitComparator<Double> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
             return Double.compare(story1.rating, story2.rating);
         }
         
+        @Override
+        public LitProperty<Double> getProperty() {
+            return LitProperty.RATING;
+        }
+        
     }
     
-    private static class DateComparator implements Comparator<LitStory> {
+    static class DateComparator implements LitComparator<LocalDate> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
             return story1.date.compareTo(story2.date);
         }
         
+        @Override
+        public LitProperty<LocalDate> getProperty() {
+            return LitProperty.DATE;
+        }
+        
     }
     
-    private static class LengthComparator implements Comparator<LitStory> {
+    static class LengthComparator implements LitComparator<Integer> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
@@ -184,13 +148,23 @@ public class LitStory implements Iterable<Document> {
             }
         }
         
+        @Override
+        public LitProperty<Integer> getProperty() {
+            return LitProperty.LENGTH;
+        }
+        
     }
     
-    private static class CategoryComparator implements Comparator<LitStory> {
+    static class CategoryComparator implements LitComparator<String> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
             return story1.category.compareTo(story2.category);
+        }
+        
+        @Override
+        public LitProperty<String> getProperty() {
+            return LitProperty.CATEGORY;
         }
         
     }

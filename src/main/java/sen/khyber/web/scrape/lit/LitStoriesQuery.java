@@ -1,15 +1,14 @@
 package sen.khyber.web.scrape.lit;
 
-import static sen.khyber.web.scrape.lit.LitStory.Property.AUTHOR;
-import static sen.khyber.web.scrape.lit.LitStory.Property.AUTHOR_NAME;
-import static sen.khyber.web.scrape.lit.LitStory.Property.CATEGORY;
-import static sen.khyber.web.scrape.lit.LitStory.Property.DATE;
-import static sen.khyber.web.scrape.lit.LitStory.Property.LENGTH;
-import static sen.khyber.web.scrape.lit.LitStory.Property.RATING;
+import static sen.khyber.web.scrape.lit.LitProperty.AUTHOR;
+import static sen.khyber.web.scrape.lit.LitProperty.AUTHOR_NAME;
+import static sen.khyber.web.scrape.lit.LitProperty.CATEGORY;
+import static sen.khyber.web.scrape.lit.LitProperty.DATE;
+import static sen.khyber.web.scrape.lit.LitProperty.LENGTH;
+import static sen.khyber.web.scrape.lit.LitProperty.RATING;
 
 import sen.khyber.util.BaseQuery;
 import sen.khyber.util.Query;
-import sen.khyber.web.scrape.lit.LitStory.Property;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -24,21 +23,25 @@ import java.util.Map;
  */
 public interface LitStoriesQuery extends Query<LitStory>, BaseQuery<LitStory, LitStoriesQuery> {
     
-    public <T> LitStoriesQuery withProperty(Property<T> property, T value);
+    public <T> LitStoriesQuery withProperty(LitProperty<T> property, T value);
     
-    public <T> LitStoriesQuery withProperties(Property<T> property, Collection<T> values);
+    public <T> LitStoriesQuery withProperties(LitProperty<T> property, Collection<T> values);
     
-    public <T> LitStoriesQuery withPropertyGreaterThan(Property<T> property, T value);
+    public <T> LitStoriesQuery withPropertyGreaterThan(LitProperty<T> property, T value);
     
-    public <T> LitStoriesQuery withPropertyLessThan(Property<T> property, T value);
+    public <T> LitStoriesQuery withPropertyLessThan(LitProperty<T> property, T value);
     
-    public <T> LitStoriesQuery withPropertyBetween(Property<T> property, T lesser, T greater);
+    public default <T> LitStoriesQuery withPropertyBetween(final LitProperty<T> property,
+            final T lesser, final T greater) {
+        return withPropertyGreaterThan(property, lesser)
+                .withPropertyLessThan(property, greater);
+    }
     
-    public default LitStoriesQuery sortedBy(final Property<?> property) {
+    public default LitStoriesQuery sortedBy(final LitProperty<?> property) {
         return sorted(property.getOrder());
     }
     
-    public default <T> Map<T, List<LitStory>> groupedBy(final Property<T> property) {
+    public default <T> Map<T, List<LitStory>> groupedBy(final LitProperty<T> property) {
         return groupedBy(property.getGetter());
     }
     
@@ -125,39 +128,39 @@ public interface LitStoriesQuery extends Query<LitStory>, BaseQuery<LitStory, Li
     }
     
     public default LitStoriesQuery sortedByAuthor() {
-        return sortedBy(Property.AUTHOR);
+        return sortedBy(LitProperty.AUTHOR);
     }
     
     public default LitStoriesQuery sortedByCategory() {
-        return sortedBy(Property.CATEGORY);
+        return sortedBy(LitProperty.CATEGORY);
     }
     
     public default LitStoriesQuery sortedByRating() {
-        return sortedBy(Property.RATING);
+        return sortedBy(LitProperty.RATING);
     }
     
     public default LitStoriesQuery sortedByDate() {
-        return sortedBy(Property.DATE);
+        return sortedBy(LitProperty.DATE);
     }
     
     public default LitStoriesQuery sortedByLength() {
-        return sortedBy(Property.LENGTH);
+        return sortedBy(LitProperty.LENGTH);
     }
     
     public default Map<LitAuthor, List<LitStory>> groupedByAuthor() {
-        return groupedBy(Property.AUTHOR);
+        return groupedBy(LitProperty.AUTHOR);
     }
     
     public default Map<String, List<LitStory>> groupedByAuthorName() {
-        return groupedBy(Property.AUTHOR_NAME);
+        return groupedBy(LitProperty.AUTHOR_NAME);
     }
     
     public default Map<String, List<LitStory>> groupedByCategory() {
-        return groupedBy(Property.CATEGORY);
+        return groupedBy(LitProperty.CATEGORY);
     }
     
     public default Map<LocalDate, List<LitStory>> groupedByDate() {
-        return groupedBy(Property.DATE);
+        return groupedBy(LitProperty.DATE);
     }
     
     public static void main(final String[] args) {

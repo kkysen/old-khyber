@@ -216,6 +216,7 @@ public class QueryImpl<T, Q extends BaseQuery<T, Q>> implements Query<T>, BaseQu
         return (Q) this;
     }
     
+    @Override
     @SuppressWarnings("unchecked")
     public final Q skip(final long n) {
         checkNonNegative(n, "skip");
