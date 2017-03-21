@@ -1,130 +1,163 @@
 package sen.khyber.web.scrape.lit;
 
+import static sen.khyber.web.scrape.lit.LitStory.Property.AUTHOR;
+import static sen.khyber.web.scrape.lit.LitStory.Property.AUTHOR_NAME;
+import static sen.khyber.web.scrape.lit.LitStory.Property.CATEGORY;
+import static sen.khyber.web.scrape.lit.LitStory.Property.DATE;
+import static sen.khyber.web.scrape.lit.LitStory.Property.LENGTH;
+import static sen.khyber.web.scrape.lit.LitStory.Property.RATING;
+
+import sen.khyber.util.BaseQuery;
 import sen.khyber.util.Query;
+import sen.khyber.web.scrape.lit.LitStory.Property;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * 
  * 
  * @author Khyber Sen
  */
-public interface LitStoriesQuery extends Query<LitStory> {
+public interface LitStoriesQuery extends Query<LitStory>, BaseQuery<LitStory, LitStoriesQuery> {
     
-    @Override
-    public LitStoriesQuery parallel();
+    public <T> LitStoriesQuery withProperty(Property<T> property, T value);
     
-    @Override
-    public LitStoriesQuery sequential();
+    public <T> LitStoriesQuery withProperties(Property<T> property, Collection<T> values);
     
-    @Override
-    public LitStoriesQuery distinct();
+    public <T> LitStoriesQuery withPropertyGreaterThan(Property<T> property, T value);
     
-    @Override
-    public LitStoriesQuery sorted();
+    public <T> LitStoriesQuery withPropertyLessThan(Property<T> property, T value);
     
-    @Override
-    public LitStoriesQuery sorted(Comparator<? super LitStory> comparator);
+    public <T> LitStoriesQuery withPropertyBetween(Property<T> property, T lesser, T greater);
     
-    @Override
-    public LitStoriesQuery filter(Predicate<? super LitStory> predicate);
+    public default LitStoriesQuery sortedBy(final Property<?> property) {
+        return sorted(property.getOrder());
+    }
     
-    @Override
-    public LitStoriesQuery filterOut(final Predicate<? super LitStory> predicate);
+    public default <T> Map<T, List<LitStory>> groupedBy(final Property<T> property) {
+        return groupedBy(property.getGetter());
+    }
     
-    @Override
-    public LitStoriesQuery peek(final Consumer<? super LitStory> action);
+    public default LitStoriesQuery byAuthor(final String author) {
+        return withProperty(AUTHOR_NAME, author);
+    }
     
-    @Override
-    public LitStoriesQuery limit(final long maxSize);
-    
-    public LitStoriesQuery byAuthor(final String author);
-    
-    public LitStoriesQuery byAuthors(final Collection<String> authors);
+    public default LitStoriesQuery byAuthors(final Collection<String> authors) {
+        return withProperties(AUTHOR_NAME, authors);
+    }
     
     public default LitStoriesQuery byAuthors(final String... authors) {
         return byAuthors(Arrays.asList(authors));
     }
     
-    public LitStoriesQuery byLitAuthor(LitAuthor author);
+    public default LitStoriesQuery byLitAuthor(final LitAuthor author) {
+        return withProperty(AUTHOR, author);
+    }
     
-    public LitStoriesQuery byLitAuthors(Collection<LitAuthor> authors);
+    public default LitStoriesQuery byLitAuthors(final Collection<LitAuthor> authors) {
+        return withProperties(AUTHOR, authors);
+    }
     
     public default LitStoriesQuery byLitAuthors(final LitAuthor... authors) {
         return byLitAuthors(Arrays.asList(authors));
     }
     
-    public LitStoriesQuery inCategory(String category);
+    public default LitStoriesQuery inCategory(final String category) {
+        return withProperty(CATEGORY, category);
+    }
     
-    public LitStoriesQuery inCategories(Collection<String> categories);
+    public default LitStoriesQuery inCategories(final Collection<String> categories) {
+        return withProperties(CATEGORY, categories);
+    }
     
     public default LitStoriesQuery inCategories(final String... categories) {
         return inCategories(Arrays.asList(categories));
     }
     
-    public LitStoriesQuery rated(double rating);
+    public default LitStoriesQuery rated(final double rating) {
+        return withProperty(RATING, rating);
+    }
     
-    public LitStoriesQuery ratedAbove(double rating);
+    public default LitStoriesQuery ratedAbove(final double rating) {
+        return withPropertyGreaterThan(RATING, rating);
+    }
     
-    public LitStoriesQuery ratedBelow(double rating);
+    public default LitStoriesQuery ratedBelow(final double rating) {
+        return withPropertyLessThan(RATING, rating);
+    }
     
-    public LitStoriesQuery ratedBetween(double lowerRating, double higherRating);
+    public default LitStoriesQuery ratedBetween(final double lowerRating,
+            final double higherRating) {
+        return withPropertyBetween(RATING, lowerRating, higherRating);
+    }
     
-    public LitStoriesQuery onDate(LocalDate date);
+    public default LitStoriesQuery onDate(final LocalDate date) {
+        return withProperty(DATE, date);
+    }
     
-    public LitStoriesQuery afterDate(LocalDate date);
+    public default LitStoriesQuery afterDate(final LocalDate date) {
+        return withPropertyGreaterThan(DATE, date);
+    }
     
-    public LitStoriesQuery beforeDate(LocalDate date);
+    public default LitStoriesQuery beforeDate(final LocalDate date) {
+        return withPropertyLessThan(DATE, date);
+    }
     
-    public LitStoriesQuery betweenDates(LocalDate olderDate, LocalDate newerDate);
+    public default LitStoriesQuery betweenDates(final LocalDate olderDate,
+            final LocalDate newerDate) {
+        return withPropertyBetween(DATE, olderDate, newerDate);
+    }
     
-    public LitStoriesQuery ofLength(int numPages);
+    public default LitStoriesQuery ofLength(final int numPages) {
+        return withProperty(LENGTH, numPages);
+    }
     
-    public LitStoriesQuery longerThan(int numPages);
+    public default LitStoriesQuery longerThan(final int numPages) {
+        return withPropertyGreaterThan(LENGTH, numPages);
+    }
     
-    public LitStoriesQuery shorterThan(int numPages);
+    public default LitStoriesQuery shorterThan(final int numPages) {
+        return withPropertyLessThan(LENGTH, numPages);
+    }
     
     public default LitStoriesQuery sortedByAuthor() {
-        return sorted(LitStory.Property.AUTHOR.getOrder());
+        return sortedBy(Property.AUTHOR);
     }
     
     public default LitStoriesQuery sortedByCategory() {
-        return sorted(LitStory.Property.CATEGORY.getOrder());
+        return sortedBy(Property.CATEGORY);
     }
     
     public default LitStoriesQuery sortedByRating() {
-        return sorted(LitStory.Property.RATING.getOrder());
+        return sortedBy(Property.RATING);
     }
     
     public default LitStoriesQuery sortedByDate() {
-        return sorted(LitStory.Property.DATE.getOrder());
+        return sortedBy(Property.DATE);
     }
     
     public default LitStoriesQuery sortedByLength() {
-        return sorted(LitStory.Property.LENGTH.getOrder());
+        return sortedBy(Property.LENGTH);
     }
     
     public default Map<LitAuthor, List<LitStory>> groupedByAuthor() {
-        return groupedBy(LitStory.Property.AUTHOR.getGetter());
+        return groupedBy(Property.AUTHOR);
     }
     
     public default Map<String, List<LitStory>> groupedByAuthorName() {
-        return groupedBy(LitStory.Property.AUTHOR_NAME.getGetter());
+        return groupedBy(Property.AUTHOR_NAME);
     }
     
     public default Map<String, List<LitStory>> groupedByCategory() {
-        return groupedBy(LitStory.Property.CATEGORY.getGetter());
+        return groupedBy(Property.CATEGORY);
     }
     
     public default Map<LocalDate, List<LitStory>> groupedByDate() {
-        return groupedBy(LitStory.Property.DATE.getGetter());
+        return groupedBy(Property.DATE);
     }
     
     public static void main(final String[] args) {

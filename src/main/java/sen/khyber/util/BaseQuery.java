@@ -42,4 +42,7 @@ public interface BaseQuery<T, Q extends BaseQuery<T, Q>> extends Query<T> {
     @Override
     public Q limit(final long maxSize);
     
+    @Override
+    public Q skip(long n);
+    
 }

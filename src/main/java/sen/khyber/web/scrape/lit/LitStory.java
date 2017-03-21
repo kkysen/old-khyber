@@ -35,15 +35,20 @@ public class LitStory implements Iterable<Document> {
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M/d/yy");
     
-    public static final Comparator<LitStory> TITLE_ORDER = new TitleComparator();
-    public static final Comparator<LitStory> AUTHOR_ORDER = new AuthorComparator();
-    public static final Comparator<LitStory> RATING_ORDER = new RatingComparator().reversed();
-    public static final Comparator<LitStory> DATE_ORDER = new DateComparator().reversed();
-    public static final Comparator<LitStory> LENGTH_ORDER = new LengthComparator().reversed();
-    public static final Comparator<LitStory> CATEGORY_ORDER = new CategoryComparator();
+    private static final Comparator<LitStory> TITLE_ORDER = new TitleComparator();
+    private static final Comparator<LitStory> AUTHOR_ORDER = new AuthorComparator();
+    private static final Comparator<LitStory> RATING_ORDER = new RatingComparator().reversed();
+    private static final Comparator<LitStory> DATE_ORDER = new DateComparator().reversed();
+    private static final Comparator<LitStory> LENGTH_ORDER = new LengthComparator().reversed();
+    private static final Comparator<LitStory> CATEGORY_ORDER = new CategoryComparator();
     
-    // no type parameters allowed for enums
-    public static class Property<T> {
+    /**
+     * no type parameters allowed for enums
+     * 
+     * @author Khyber Sen
+     * @param <T>
+     */
+    public static final class Property<T> {
         
         public static final Property<String> TITLE = //
                 new Property<>(LitStory::getTitle, TITLE_ORDER);
@@ -77,6 +82,13 @@ public class LitStory implements Iterable<Document> {
             this.getter = getter;
             this.order = order;
         }
+        
+        /**
+         * ordered by decreasing rarity
+         */
+        public static final Property<?>[] values = {
+            TITLE, AUTHOR, AUTHOR_NAME, RATING, DATE, DATE_STRING, LENGTH, CATEGORY,
+        };
         
     }
     

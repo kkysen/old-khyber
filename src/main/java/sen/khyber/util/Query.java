@@ -66,6 +66,8 @@ public interface Query<T> {
     
     public Query<T> limit(final long maxSize);
     
+    public Query<T> skip(long n);
+    
     public void forEach(final Consumer<? super T> action);
     
     public void forEachOrdered(Consumer<? super T> action);

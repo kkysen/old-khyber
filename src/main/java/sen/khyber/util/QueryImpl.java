@@ -24,8 +24,9 @@ import lombok.Getter;
  * 
  * @author Khyber Sen
  * @param <T> type returned by this streaming query
+ * @param <Q> for extending
  */
-public class QueryImpl<T> implements Query<T> {
+public class QueryImpl<T, Q extends BaseQuery<T, Q>> implements Query<T>, BaseQuery<T, Q> {
     
     /*
      * distinct is kind of filter
@@ -157,40 +158,46 @@ public class QueryImpl<T> implements Query<T> {
         return parallel;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public final Query<T> parallel() {
+    public final Q parallel() {
         parallel = true;
-        return this;
+        return (Q) this;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public final Query<T> sequential() {
+    public final Q sequential() {
         parallel = false;
-        return this;
+        return (Q) this;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public final Query<T> distinct() {
+    public final Q distinct() {
         distinct = true;
-        return this;
+        return (Q) this;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public final Query<T> sorted(final Comparator<? super T> comparator) {
+    public final Q sorted(final Comparator<? super T> comparator) {
         new Sort(comparator);
-        return this;
+        return (Q) this;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public final Query<T> filter(final Predicate<? super T> predicate) {
+    public final Q filter(final Predicate<? super T> predicate) {
         new Filter(predicate);
-        return this;
+        return (Q) this;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public final Query<T> peek(final Consumer<? super T> action) {
+    public final Q peek(final Consumer<? super T> action) {
         peeks.add(action);
-        return this;
+        return (Q) this;
     }
     
     private void checkNonNegative(final long n, final String what) {
@@ -199,19 +206,21 @@ public class QueryImpl<T> implements Query<T> {
         }
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public final Query<T> limit(final long maxSize) {
+    public final Q limit(final long maxSize) {
         checkNonNegative(maxSize, "maxSize");
         if (maxSize < limit) {
             limit = maxSize;
         }
-        return this;
+        return (Q) this;
     }
     
-    public final Query<T> skip(final long n) {
+    @SuppressWarnings("unchecked")
+    public final Q skip(final long n) {
         checkNonNegative(n, "skip");
         skip += n;
-        return this;
+        return (Q) this;
     }
     
     private Stream<T> applyLimit(Stream<T> stream) {

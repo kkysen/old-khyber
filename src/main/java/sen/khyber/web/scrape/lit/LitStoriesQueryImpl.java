@@ -2,8 +2,8 @@ package sen.khyber.web.scrape.lit;
 
 import sen.khyber.util.CollectionUtils;
 import sen.khyber.util.QueryImpl;
+import sen.khyber.web.scrape.lit.LitStory.Property;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -11,13 +11,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
 
 @ExtensionMethod(CollectionUtils.class)
-public class LitStoriesQueryImpl extends QueryImpl<LitStory> implements LitStoriesQuery {
+public class LitStoriesQueryImpl extends QueryImpl<LitStory, LitStoriesQuery>
+        implements LitStoriesQuery {
     
     private class GetterFilter<T> extends Filter {
         
@@ -61,7 +63,7 @@ public class LitStoriesQueryImpl extends QueryImpl<LitStory> implements LitStori
     }
     
     public static <T> Comparator<T> classComparator(final List<Class<? extends T>> classOrder) {
-        final Map<Class<? extends T>, Integer> order = new HashMap<>(classOrder.length);
+        final Map<Class<? extends T>, Integer> order = new HashMap<>(classOrder.size());
         for (int i = 0; i < classOrder.size(); i++) {
             order.put(classOrder.get(i), i);
         }
@@ -71,15 +73,26 @@ public class LitStoriesQueryImpl extends QueryImpl<LitStory> implements LitStori
     
     private static final Comparator<Filter> FILTER_ORDER_COMPARATOR = classComparator(FILTER_ORDER);
     
+    private final Map<Property<?>, Collection<?>> withProperties;
+    
+    private final Map<Property<?>,
+    
     protected LitStoriesQueryImpl(final Stream<LitStory> stream) {
         super(stream);
         // TODO Auto-generated constructor stub
+    }
+    
+    private <T> Predicate<LitStory> propertyFilter(final Property<T> property) {
+        
     }
     
     @Override
     protected void optimizeFilters(final List<Filter> filters) {
         super.optimizeFilters(filters);
         filters.sort(FILTER_ORDER_COMPARATOR);
+        for (final Property<?> property : Property.values) {
+            filters.add(new Filter(propertyFilter(property)));
+        }
     }
     
     @Override
@@ -89,73 +102,33 @@ public class LitStoriesQueryImpl extends QueryImpl<LitStory> implements LitStori
     }
     
     @Override
-    public LitStoriesQuery byAuthor(final String author) {
+    public <T> LitStoriesQuery withProperty(final Property<T> property, final T value) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    public LitStoriesQuery byAuthors(final Collection<String> authors) {
+    public <T> LitStoriesQuery withProperties(final Property<T> property,
+            final Collection<T> values) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    public LitStoriesQuery inCategory(final String category) {
+    public <T> LitStoriesQuery withPropertyGreaterThan(final Property<T> property, final T value) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    public LitStoriesQuery inCategories(final Collection<String> categories) {
+    public <T> LitStoriesQuery withPropertyLessThan(final Property<T> property, final T value) {
         // TODO Auto-generated method stub
         return null;
     }
     
     @Override
-    public LitStoriesQuery rated(final double rating) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public LitStoriesQuery ratedAbove(final double rating) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public LitStoriesQuery ratedBelow(final double rating) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public LitStoriesQuery ratedBetween(final double lowerRating, final double higherRating) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public LitStoriesQuery onDate(final LocalDate date) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public LitStoriesQuery afterDate(final LocalDate date) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public LitStoriesQuery beforeDate(final LocalDate date) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public LitStoriesQuery betweenDates(final LocalDate olderDate, final LocalDate newerDate) {
+    public <T> LitStoriesQuery withPropertyBetween(final Property<T> property, final T lesser,
+            final T greater) {
         // TODO Auto-generated method stub
         return null;
     }
