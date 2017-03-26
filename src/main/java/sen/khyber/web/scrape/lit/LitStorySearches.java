@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 
 public class LitStorySearches extends LitSearches<LitStorySearch> {
     
-    private static final String URL = Lit.SEARCH_QUERY_URL + "type=story";
+    private static final String URL = Lit.Url.SEARCH_QUERY.getUrl() + "type=story";
     
     public LitStorySearches() throws IOException {}
     
@@ -19,12 +19,12 @@ public class LitStorySearches extends LitSearches<LitStorySearch> {
     protected String getUrl() {
         return URL;
     }
-
+    
     @Override
     protected String getFilterString() {
         return "search.php?q=";
     }
-
+    
     @Override
     protected Function<Element, LitStorySearch> getLitSearchConstructorFunction() {
         return LitStorySearch::new;

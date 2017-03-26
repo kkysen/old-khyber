@@ -1,10 +1,10 @@
 package sen.khyber.io;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,8 +25,7 @@ import org.apache.commons.io.FileUtils;
 public class MyFiles {
     
     private static final Charset CHARSET = StandardCharsets.UTF_8;
-    private static final String ILLEGAL_FILE_CHARS = 
-            "\\\\" + "/" + "\\?" + "%" + "\\*"
+    private static final String ILLEGAL_FILE_CHARS = "\\\\" + "/" + "\\?" + "%" + "\\*"
             + ":" + "\\|" + "\"" + "<" + ">";
     
     public static String read(final Path path) throws IOException {
@@ -96,6 +95,15 @@ public class MyFiles {
     
     public static FileLines readLinesAsIterable(final Path path) {
         return new FileLines(path, CHARSET);
+    }
+    
+    public static void consumeLines(final Path path, final Consumer<String> consumer)
+            throws IOException {
+        final BufferedReader reader = Files.newBufferedReader(path);
+        String line;
+        while ((line = reader.readLine()) != null) {
+            consumer.accept(line);
+        }
     }
     
     private static void walkDirectory(final List<Path> paths, final Path dir, final int maxDepth)

@@ -58,7 +58,8 @@ public class LitStoriesQueryImpl extends QueryImpl<LitStory, LitStoriesQuery>
     }
     
     private <T> Predicate<LitStory> propertyFilter(final LitProperty<T> property) {
-        
+        // TODO
+        return null;
     }
     
     @Override

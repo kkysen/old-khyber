@@ -19,7 +19,7 @@ import org.jsoup.nodes.Element;
  */
 public class LitAuthorSearch extends LitSearches<LitAuthorSearchResult> {
     
-    private static final String URL = Lit.SEARCH_QUERY_URL + "type=member";
+    private static final String URL = Lit.Url.SEARCH_QUERY.getUrl() + "type=member";
     
     public LitAuthorSearch() throws IOException {}
     

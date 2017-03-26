@@ -1,10 +1,13 @@
 package sen.khyber.web.scrape.lit;
 
 import sen.khyber.io.MyFiles;
+import sen.khyber.util.ByteBufferUtils;
 import sen.khyber.web.Internet;
+import sen.khyber.web.scrape.lit.Lit.Category;
 
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -25,24 +28,31 @@ import org.jsoup.select.Elements;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.ExtensionMethod;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@ExtensionMethod(ByteBufferUtils.class)
 public class LitStory implements Iterable<Document> {
+    
+    private static final String URL = Lit.Url.STORY.getUrl();
     
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M/d/yy");
     
     public static final LitStory DUMMY = new LitStory(null, "authorName", "title", "href",
-            "description", "category", "categoryHref", null, -1);
+            "description", null, null, -1);
     
     private final @Getter LitAuthor author;
     private final @Getter String authorName;
     private final @Getter String title;
-    private final @Getter String href;
+    private final String href;
     private final @Getter String description;
-    private final @Getter String category;
-    private final @Getter String categoryHref;
-    private final @Getter LocalDate date; // FIXME
+    private final @Getter Category category;
+    private final @Getter LocalDate date;
     private final @Getter double rating;
+    
+    public String getHref() {
+        return URL + href;
+    }
     
     public String getDateString() {
         return date.format(DATE_FORMATTER);
@@ -61,7 +71,9 @@ public class LitStory implements Iterable<Document> {
         final Element titleAndRatingElem = rowData.get(0);
         final Element titleElem = titleAndRatingElem.child(0);
         title = titleElem.text();
-        href = titleElem.attr("href");
+        final String fullHref = titleElem.attr("href");
+        final int startIndex = fullHref.lastIndexOf('/') + 1;
+        href = fullHref.substring(startIndex, fullHref.length());
         
         final String ratingEtc = titleAndRatingElem.ownText();
         final String ratingString = ratingEtc.substring(ratingEtc.length() - 5,
@@ -69,14 +81,82 @@ public class LitStory implements Iterable<Document> {
         rating = ratingString.contains("x") ? 0 : Double.parseDouble(ratingString);
         
         final Element descriptionElem = rowData.get(1);
-        description = descriptionElem.ownText().trim();
+        final String tempDescription = descriptionElem.ownText().trim();
+        description = tempDescription == null ? "" : tempDescription;
         
         final Element categoryElem = rowData.get(2).child(0);
-        category = categoryElem.text();
-        categoryHref = categoryElem.attr("href");
+        final String categoryHref = categoryElem.attr("href");
+        System.out.println(categoryHref);
+        category = Category.valueOf(categoryHref);
+        if (category == null) {
+            System.out.println(this);
+        }
         
         final Element dateElem = rowData.get(3);
         date = LocalDate.parse(dateElem.ownText(), DATE_FORMATTER);
+    }
+    
+    public LitStory(final ByteBuffer in, final LitAuthor author) {
+        this.author = author;
+        authorName = author.getName();
+        
+        rating = in.getFloat();
+        
+        category = Category.valueOf(in.get());
+        
+        final int year = in.getShort();
+        final int month = in.get();
+        final int day = in.get();
+        date = LocalDate.of(year, month, day);
+        
+        title = in.getShortString();
+        href = in.getShortString();
+        description = in.getShortString();
+    }
+    
+    private static final int BASE_SERIALIZED_LENGTH = 0
+            + Float.BYTES // rating
+            + Byte.BYTES // category
+            + Short.BYTES // year
+            + Byte.BYTES // month
+            + Byte.BYTES // day
+            + Short.BYTES // title length
+            + Short.BYTES // href length
+            + Short.BYTES; // description length
+    
+    private byte[] titleBytes;
+    private byte[] descriptionBytes;
+    
+    public int serializedLength() {
+        titleBytes = title.getBytes();
+        descriptionBytes = description.getBytes();
+        return BASE_SERIALIZED_LENGTH + titleBytes.length + href.length() + descriptionBytes.length;
+    }
+    
+    public void serialize(final ByteBuffer out) {
+        final int start = out.position();
+        
+        out.putFloat((float) rating);
+        
+        System.out.println(category);
+        out.put((byte) category.getId());
+        
+        out.putShort((short) date.getYear());
+        out.put((byte) date.getMonthValue());
+        out.put((byte) date.getDayOfMonth());
+        
+        out.putShortBytes(titleBytes);
+        out.putShortString(href);
+        out.putShortBytes(descriptionBytes);
+        
+        final int titleLength = title.length();
+        final int hrefLength = href.length();
+        final int descriptionLength = description.length();
+        final int end = out.position();
+        final int length = serializedLength();
+        if (end - start != length) {
+            System.out.println(this);
+        }
     }
     
     private static interface LitComparator<T> extends UsingLitProperty<T>, Comparator<LitStory> {}
@@ -155,7 +235,7 @@ public class LitStory implements Iterable<Document> {
         
     }
     
-    static class CategoryComparator implements LitComparator<String> {
+    static class CategoryComparator implements LitComparator<Category> {
         
         @Override
         public int compare(final LitStory story1, final LitStory story2) {
@@ -163,7 +243,7 @@ public class LitStory implements Iterable<Document> {
         }
         
         @Override
-        public LitProperty<String> getProperty() {
+        public LitProperty<Category> getProperty() {
             return LitProperty.CATEGORY;
         }
         
@@ -330,12 +410,12 @@ public class LitStory implements Iterable<Document> {
     }
     
     public void download() throws IOException {
-        download(Paths.get(Lit.DOWNLOAD_DIR + "/stories"));
+        download(Lit.DOWNLOAD_DIR.resolve("stories"));
     }
     
     @Override
     public int hashCode() {
-        return 31 * href.hashCode();
+        return href.hashCode();
     }
     
     @Override

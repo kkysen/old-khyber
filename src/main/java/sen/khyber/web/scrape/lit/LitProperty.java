@@ -1,6 +1,7 @@
 package sen.khyber.web.scrape.lit;
 
 import sen.khyber.util.Property;
+import sen.khyber.web.scrape.lit.Lit.Category;
 import sen.khyber.web.scrape.lit.LitStory.AuthorComparator;
 import sen.khyber.web.scrape.lit.LitStory.CategoryComparator;
 import sen.khyber.web.scrape.lit.LitStory.DateComparator;
@@ -38,7 +39,7 @@ public final class LitProperty<T> implements Property<LitStory, T> {
     public static final LitProperty<String> AUTHOR_NAME = //
             new LitProperty<>(LitStory::getAuthorName, AUTHOR_ORDER);
     
-    public static final LitProperty<String> CATEGORY = //
+    public static final LitProperty<Category> CATEGORY = //
             new LitProperty<>(LitStory::getCategory, CATEGORY_ORDER);
     
     public static final LitProperty<Double> RATING = //

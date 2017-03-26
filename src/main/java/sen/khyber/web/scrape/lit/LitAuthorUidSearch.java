@@ -5,11 +5,15 @@ import sen.khyber.util.Timer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import co.paralleluniverse.fibers.Fiber;
+import co.paralleluniverse.fibers.SuspendExecution;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 /**
  * 
@@ -18,29 +22,42 @@ import java.util.stream.Stream;
  */
 public class LitAuthorUidSearch {
     
-    private static final String URL = Lit.AUTHOR_URL;
+    private static final OkHttpClient client = new OkHttpClient();
     
-    private static boolean exists(final String urlStr) throws IOException {
-        final URL url = new URL(urlStr);
-        final InputStream in = url.openStream();
-        //final BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-        in.read();
+    private static final String URL = Lit.Url.AUTHOR.getUrl();
+    
+    private static boolean exists(final String url) throws IOException {
+        final Request request = new Request.Builder().url(url).addHeader("Range", "bytes=0-2")
+                .build();
+        final InputStream in = client.newCall(request).execute().body().byteStream();
+        final byte[] bytes = new byte[2];
+        in.read(bytes);
         // if author doesn't exist, first line will start <b> instead of <?xml
         // b == 98
-        return in.read() != 98;
+        return bytes[1] != 98;
     }
     
     private static boolean exists(final int uid) throws IOException {
-        return exists(URL + uid);
+        return new Fiber<Boolean>() {
+            
+            private static final long serialVersionUID = 1L;
+            
+            @Override
+            protected Boolean run() throws SuspendExecution, InterruptedException {
+                return exists(URL + uid);
+            };
+            
+        }.get();
     }
     
-    private static IntStream searchForUids(final int startUid, final int endUid, final int numThreads)
+    private static IntStream searchForUids(final int startUid, final int endUid,
+            final int numThreads)
             throws IOException {
         final String numThreadsProperty = "java.util.concurrent.ForkJoinPool.common.parallelism";
         final String oldNumThreads = System.getProperty(numThreadsProperty);
         final String newNumThreads = String.valueOf(numThreads);
         System.setProperty(numThreadsProperty, newNumThreads);
-        final IntStream uids =  IntStream.range(startUid, endUid)
+        final IntStream uids = IntStream.range(startUid, endUid)
                 .parallel()
                 .filter(uid -> {
                     try {
@@ -49,13 +66,14 @@ public class LitAuthorUidSearch {
                         return false;
                     }
                 })
-                //.sorted()
-                ;
+        //.sorted()
+        ;
         System.setProperty(numThreadsProperty, oldNumThreads);
         return uids;
     }
     
-    private static IntStream searchForUids(final int startUid, final int endUid) throws IOException {
+    private static IntStream searchForUids(final int startUid, final int endUid)
+            throws IOException {
         int numThreads = endUid - startUid >> 4;
         if (numThreads > 1 << 12) {
             numThreads = 1 << 12;

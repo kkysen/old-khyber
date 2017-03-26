@@ -5,7 +5,8 @@
 #*.project
 #/.settings/
 #/target/
-**/Lit.java
+**/Lit.*
+**/Lit$*
 src/test/java/sen/khyber/**/lit/
 target/test-classes/sen/khyber/**/lit/
 /tempHtmlPage/

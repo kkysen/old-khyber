@@ -9,6 +9,7 @@ import static sen.khyber.web.scrape.lit.LitProperty.RATING;
 
 import sen.khyber.util.BaseQuery;
 import sen.khyber.util.Query;
+import sen.khyber.web.scrape.lit.Lit.Category;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -69,15 +70,15 @@ public interface LitStoriesQuery extends Query<LitStory>, BaseQuery<LitStory, Li
         return byLitAuthors(Arrays.asList(authors));
     }
     
-    public default LitStoriesQuery inCategory(final String category) {
+    public default LitStoriesQuery inCategory(final Category category) {
         return withProperty(CATEGORY, category);
     }
     
-    public default LitStoriesQuery inCategories(final Collection<String> categories) {
+    public default LitStoriesQuery inCategories(final Collection<Category> categories) {
         return withProperties(CATEGORY, categories);
     }
     
-    public default LitStoriesQuery inCategories(final String... categories) {
+    public default LitStoriesQuery inCategories(final Category... categories) {
         return inCategories(Arrays.asList(categories));
     }
     
@@ -155,7 +156,7 @@ public interface LitStoriesQuery extends Query<LitStory>, BaseQuery<LitStory, Li
         return groupedBy(LitProperty.AUTHOR_NAME);
     }
     
-    public default Map<String, List<LitStory>> groupedByCategory() {
+    public default Map<Category, List<LitStory>> groupedByCategory() {
         return groupedBy(LitProperty.CATEGORY);
     }
     
@@ -168,7 +169,7 @@ public interface LitStoriesQuery extends Query<LitStory>, BaseQuery<LitStory, Li
         query.parallel()
                 .byAuthor("author")
                 .afterDate(LocalDate.of(2017, 3, 18))
-                .inCategory("category")
+                .inCategory(Category.valueOf(0))
                 .ratedAbove(4)
                 .limit(100)
                 .longerThan(10)

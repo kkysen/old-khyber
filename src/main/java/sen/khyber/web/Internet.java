@@ -38,6 +38,10 @@ import com.gargoylesoftware.htmlunit.html.HTMLParserListener;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.javascript.JavaScriptErrorListener;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 /**
  * utilities for reading the html from a website
  * 
@@ -281,6 +285,20 @@ public class Internet {
         IOUtils.copy(input, writer, StandardCharsets.UTF_8);
         input.close();
         writer.close();
+    }
+    
+    public static final OkHttpClient client = new OkHttpClient();
+    
+    public static Response response(final String url) throws IOException {
+        return client.newCall(new Request.Builder().url(url).build()).execute();
+    }
+    
+    public static InputStream inputStream(final String url) throws IOException {
+        return response(url).body().byteStream();
+    }
+    
+    public static byte[] bytes(final String url) throws IOException {
+        return response(url).body().bytes();
     }
     
     public static void main(final String[] args) throws Exception {

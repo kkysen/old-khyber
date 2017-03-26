@@ -54,8 +54,8 @@ public class LitStories implements Iterable<LitStory> {
         }
         this.stories = stories;
         if (!sorted) {
-            stories.sort(LitStory.TITLE_ORDER);
-            stories.sort(LitStory.RATING_ORDER);
+            stories.sort(LitProperty.TITLE.getOrder());
+            stories.sort(LitProperty.RATING.getOrder());
         }
     }
     
@@ -93,7 +93,8 @@ public class LitStories implements Iterable<LitStory> {
     
     private <K> Map<K, LitStories> getGrouping(final String groupingName) {
         @SuppressWarnings("unchecked")
-        final Map<K, List<LitStory>> groupingMap = (Map<K, List<LitStory>>) getGroupingMap(groupingName);
+        final Map<K, List<LitStory>> groupingMap = (Map<K, List<LitStory>>) getGroupingMap(
+                groupingName);
         final Map<K, LitStories> grouping = new HashMap<>(groupingMap.size());
         for (final K k : groupingMap.keySet()) {
             grouping.put(k, new LitStories(groupingMap.get(k), true));
@@ -223,7 +224,8 @@ public class LitStories implements Iterable<LitStory> {
         return stories.parallelStream();
     }
     
-    private <K> void downloadBy(final String groupingName, final Path parentDir) throws IOException {
+    private <K> void downloadBy(final String groupingName, final Path parentDir)
+            throws IOException {
         final Path dir = Paths.get(parentDir.toString(), groupingName);
         MyFiles.createDirectoryOverwriting(dir);
         final Map<K, List<LitStory>> grouping = (Map<K, List<LitStory>>) groupBy(groupingName);
@@ -240,10 +242,10 @@ public class LitStories implements Iterable<LitStory> {
         }
     }
     
-    // FIXME 
+    // FIXME
     
     private <K> void downloadBy(final String groupingName) throws IOException {
-        downloadBy(groupingName, Paths.get(Lit.DOWNLOAD_DIR));
+        downloadBy(groupingName, Lit.DOWNLOAD_DIR);
     }
     
     public void downloadByAuthor() throws IOException {
