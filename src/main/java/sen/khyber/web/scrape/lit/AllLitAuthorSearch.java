@@ -6,21 +6,15 @@ import sen.khyber.web.scrape.lit.Lit.Category;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -41,17 +35,20 @@ public class AllLitAuthorSearch {
     private static final long MIN_NUM_PAGES_SKIP_LENGTH = 0; // FIXME find out what it is
     
     private static final int MAX_DIGITS = 7; // FIXME check
-    private static final int MAX_UID = (int) Math.pow(10, MAX_DIGITS);
+    private static final int MAX_UID = (int) Math.pow(10, MAX_DIGITS) - 1;
     private static final int MAX_BITS = Integer.SIZE - Integer.numberOfLeadingZeros(MAX_UID);
     private static final int MAX_BYTES = (int) Math.ceil((double) MAX_BITS / Byte.SIZE);
     
-    private final Set<Integer> uids = ConcurrentHashMap.newKeySet();
+    private final int[] uidsCounter = new int[MAX_UID];
+    private final int[] uids = new int[MAX_UID * 2];
+    private final int[] uidIndices = new int[MAX_UID];
+    private int numUids;
     private boolean foundUids;
     
     private final List<String> failedUrls = new ArrayList<>();
     private final List<Category> failedCategories = new ArrayList<>();
     
-    private List<LitAuthor> authors;
+    private LitAuthor[] authors;
     
     // singleton
     
@@ -89,14 +86,14 @@ public class AllLitAuthorSearch {
                     }
                     uid = uid * 10 + b - '0';
                 }
-                uids.add(uid);
+                uidsCounter[uid]++;
                 // skip ahead a little to avoid checking other stuff
                 i += MIN_SKIP_LENGTH - (i - start);
             }
         }
     }
     
-    private Stream<String> getCategoryPageUrls(final String baseUrl) throws IOException {
+    private int getNumPagesInCategory(final String baseUrl) throws IOException {
         final String url = baseUrl + "1-page";
         final Request request = new Request.Builder()
                 .url(url)
@@ -109,7 +106,7 @@ public class AllLitAuthorSearch {
         try {
             while (bytes[i++] != 'Z' || bytes[i++] != '<') {}
         } catch (final IndexOutOfBoundsException e) {
-            return Stream.empty();
+            return 0;
         }
         i -= 9;
         final int end = i;
@@ -118,141 +115,21 @@ public class AllLitAuthorSearch {
             numPages = numPages * 10 + bytes[i] - '0';
         }
         System.out.println("# pages: " + numPages);
-        return IntStream.rangeClosed(1, numPages)
-                .mapToObj(pageNum -> baseUrl + pageNum + "-page");
+        //        return IntStream.rangeClosed(1, numPages)
+        //                .mapToObj(pageNum -> baseUrl + pageNum + "-page");
+        return numPages;
     }
     
-    private void findAllUidsInCategory(final String baseUrl) throws IOException {
-        System.out.println("\treading " + baseUrl);
-        getCategoryPageUrls(baseUrl)
-                .parallel()
-                .forEach(url -> {
-                    try {
-                        findAllUidsInPage(url);
-                    } catch (final IOException e) {
-                        failedUrls.add(url);
-                        e.printStackTrace();
-                    }
-                });
-    }
-    
-    public void findAllUids() {
-        if (foundUids == true) {
-            return;
-        }
-        if (Files.exists(UID_CACHE)) {
+    private void tryFindUids(final Stream<String> urls,
+            final List<String> failedUrls) {
+        urls.parallel().forEach(url -> {
             try {
-                deserializeUids();
-                return;
+                findAllUidsInPage(url);
             } catch (final IOException e) {
+                failedUrls.add(url);
                 e.printStackTrace();
             }
-        }
-        final long start = System.nanoTime();
-        for (final Category category : Category.values()) {
-            try {
-                findAllUidsInCategory(category.getUrl());
-            } catch (final IOException e) {
-                failedCategories.add(category);
-                e.printStackTrace();
-            }
-        }
-        
-        // try failed ones again
-        final int iterNum = 0;
-        while (failedUrls.size() != 0) {
-            try {
-                Thread.sleep((long) (iterNum * 1e3));
-            } catch (final InterruptedException e1) {
-                e1.printStackTrace();
-            }
-            final List<String> retryingUrls = new ArrayList<>(failedUrls);
-            failedUrls.clear();
-            retryingUrls.parallelStream().forEach(url -> {
-                try {
-                    findAllUidsInPage(url);
-                } catch (final IOException e) {
-                    failedUrls.add(url);
-                    e.printStackTrace();
-                }
-            });
-        }
-        
-        final long time = System.nanoTime() - start;
-        System.out.println(time / 1e9);
-        foundUids = true;
-    }
-    
-    private void findAllAuthors() {
-        findAllUids();
-        final AtomicInteger i = new AtomicInteger();
-        authors = uids.parallelStream()
-                .limit(2000)
-                .unordered()
-                .map(uid -> {
-                    try {
-                        System.out.println("reading author " + uid + '\t' + i.incrementAndGet());
-                        return new LitAuthor(uid);
-                    } catch (final IOException | RuntimeException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                }).filter(author -> author != null)
-                .collect(Collectors.toList());
-    }
-    
-    public void finishFindingAuthors() throws IOException {
-        findAllUids();
-        
-        //        if (!Files.exists(AUTHOR_CACHE)) {
-        //            malloc(AUTHOR_CACHE, 1);
-        //        }
-        deserializeAuthors();
-        
-        final Set<Integer> existingUids = new HashSet<>();
-        for (final LitAuthor author : authors) {
-            existingUids.add(author.getUid());
-        }
-        
-        // save copy of all uids to put back later
-        final Set<Integer> uidsCopy = new HashSet<>(uids);
-        
-        // filter out existing uids so that only find new authors
-        uids.removeAll(existingUids);
-        
-        final List<LitAuthor> existingAuthors = authors;
-        findAllAuthors();
-        
-        // add smaller list to bigger list
-        final List<LitAuthor> newAuthors = authors;
-        List<LitAuthor> mergingAuthors;
-        if (existingAuthors.size() > newAuthors.size()) {
-            authors = existingAuthors;
-            mergingAuthors = newAuthors;
-        } else {
-            authors = newAuthors;
-            mergingAuthors = existingAuthors;
-        }
-        
-        authors.addAll(mergingAuthors);
-        serializeAuthors();
-        
-        // copy back uids
-        uids.clear();
-        uids.addAll(uidsCopy);
-        serializeUids();
-    }
-    
-    public void updateAuthors() throws IOException {
-        Files.delete(UID_CACHE);
-        finishFindingAuthors();
-    }
-    
-    public List<LitAuthor> allAuthors() throws IOException {
-        if (authors == null) {
-            finishFindingAuthors();
-        }
-        return authors;
+        });
     }
     
     private static MappedByteBuffer malloc(final Path path, final long length) throws IOException {
@@ -263,106 +140,233 @@ public class AllLitAuthorSearch {
         return memory;
     }
     
-    private static void deserialize(final Consumer<ByteBuffer> deserializer, final Path path)
-            throws IOException {
-        deserializer.accept(malloc(path, path.toFile().length()));
+    private static MappedByteBuffer mallocWholeFile(final Path path) throws IOException {
+        return malloc(path, path.toFile().length());
     }
     
-    public void serializeUids(final ByteBuffer out) {
-        final int[] uidsArray = new int[uids.size()];
-        final Iterator<Integer> uidsIter = uids.iterator();
-        for (int i = 0; i < uidsArray.length; i++) {
-            uidsArray[i] = uidsIter.next();
-        }
-        Arrays.sort(uidsArray);
-        out.putInt(uidsArray.length);
-        for (final int uid : uidsArray) {
-            out.putInt(uid);
-        }
-    }
-    
-    public void deserializeUids(final ByteBuffer in) {
-        final int numUids = in.getInt();
+    private void invertUidIndices() {
         for (int i = 0; i < numUids; i++) {
-            uids.add(in.getInt());
+            uidIndices[uids[i << 1]] = i;
         }
-    }
-    
-    public void serializeAuthors(final ByteBuffer out) {
-        authors.sort(null);
-        final int numAuthors = authors.size();
-        out.putInt(numAuthors);
-        out.mark();
-        out.position(out.position() + numAuthors * Integer.BYTES);
-        final int[] offsets = new int[numAuthors];
-        for (int i = 0; i < numAuthors; i++) {
-            offsets[i] = out.position();
-            authors.get(i).serialize(out);
-        }
-        final int end = out.position();
-        out.reset();
-        for (final int offset : offsets) {
-            out.putInt(offset);
-        }
-        out.position(end);
-    }
-    
-    public void deserializeAuthors(final ByteBuffer in) {
-        if (in.capacity() == 0) {
-            authors = new ArrayList<>();
-            return;
-        }
-        final int numAuthors = in.getInt();
-        final int[] offsets = new int[numAuthors];
-        for (int i = 0; i < offsets.length; i++) {
-            offsets[i] = in.getInt();
-        }
-        authors = IntStream.of(offsets)
-                .parallel()
-                .mapToObj(offset -> {
-                    final ByteBuffer inDuplicate = in.duplicate();
-                    inDuplicate.position(offset);
-                    return new LitAuthor(inDuplicate);
-                })
-                .collect(Collectors.toList());
     }
     
     public void serializeUids() throws IOException {
-        final long length = (uids.size() + 1) * Integer.BYTES;
-        serializeUids(malloc(UID_CACHE, length));
+        final long start = System.nanoTime();
+        
+        int totalNumPages = 0;
+        final Category[] categories = Category.values();
+        final int[] numPagesInEachCategory = new int[categories.length];
+        for (int i = 0; i < categories.length; i++) {
+            final int numPages = getNumPagesInCategory(categories[i].getUrl());
+            numPagesInEachCategory[i] = numPages;
+            totalNumPages += numPages;
+        }
+        
+        final String[] pageUrls = new String[totalNumPages];
+        int j = 0;
+        for (int i = 0; i < categories.length; i++) {
+            final String baseUrl = categories[i].getUrl();
+            final int numPages = numPagesInEachCategory[i];
+            for (int pageNum = 1; pageNum <= numPages; pageNum++) {
+                pageUrls[j++] = baseUrl + pageNum + "-page";
+            }
+        }
+        
+        final List<String> failedUrls = new ArrayList<>();
+        tryFindUids(Stream.of(pageUrls), failedUrls);
+        
+        int iterNum = 0;
+        while (failedUrls.size() > 0) {
+            final String[] failedUrlsCopy = failedUrls.toArray(new String[failedUrls.size()]);
+            failedUrls.clear();
+            try {
+                Thread.sleep((long) (iterNum++ * 1e3));
+            } catch (final InterruptedException e1) {
+                e1.printStackTrace();
+            }
+            tryFindUids(Stream.of(failedUrlsCopy), failedUrls);
+        }
+        
+        final long time = System.nanoTime() - start;
+        System.out.println(time / 1e9);
+        foundUids = true;
+        
+        int i = 0;
+        for (int uid = 0; uid < uidsCounter.length; uid++) {
+            final int count = uidsCounter[uid];
+            if (count != 0) {
+                uids[i++] = uid;
+                uids[i++] = count;
+            }
+        }
+        numUids = i >>> 1;
+        final int length = (i + 1) * Integer.BYTES;
+        final IntBuffer out = malloc(UID_CACHE, length).asIntBuffer();
+        out.put(numUids);
+        out.put(uids, 0, i);
+        invertUidIndices();
     }
     
     public void deserializeUids() throws IOException {
-        System.out.println("deserializing uids");
-        deserialize(this::deserializeUids, UID_CACHE);
-        System.out.println("deserialized uids");
+        final IntBuffer in = mallocWholeFile(UID_CACHE).asIntBuffer();
+        numUids = in.get();
+        final int length = numUids << 1;
+        in.get(uids, 0, length);
+        invertUidIndices();
+    }
+    
+    private static void tryFindAuthor(final int uidNum, final int[] uids,
+            final ByteBuffer[] authorBuffers, final AtomicInteger count) throws IOException {
+        final int i = uidNum << 1;
+        final int uid = uids[i];
+        final int numStories = uids[i + 1];
+        System.out.println("reading author " + uid + '\t' + count.incrementAndGet());
+        final ByteBuffer authorBuffer = new LitAuthorSerializer(uid, numStories).serialize();
+        authorBuffers[uidNum] = authorBuffer;
+    }
+    
+    private static void tryFindAuthors(final IntStream uidNums, final int[] uids,
+            final ByteBuffer[] authorBuffers, final AtomicInteger count,
+            final List<Integer> failedUids) {
+        uidNums.parallel()
+                .forEach(uidNum -> {
+                    try {
+                        tryFindAuthor(uidNum, uids, authorBuffers, count);
+                    } catch (final IOException e) {
+                        failedUids.add(uidNum);
+                        e.printStackTrace();
+                    } catch (final ArrayIndexOutOfBoundsException e) {
+                        final int i = uidNum << 1;
+                        System.err.println("uid: " + uids[i] + ", numStories: " + uids[i + 1]);
+                        //throw e;
+                        e.printStackTrace();
+                    }
+                });
     }
     
     public void serializeAuthors() throws IOException {
-        int length = (authors.size() + 1) * Integer.BYTES;
-        for (final LitAuthor author : authors) {
-            length += author.serializedLength();
+        final AtomicInteger count = new AtomicInteger();
+        final ByteBuffer[] authorBuffers = new ByteBuffer[numUids];
+        final List<Integer> failedUids = new ArrayList<>();
+        final long start = System.nanoTime();
+        final int limit = 10000;
+        tryFindAuthors(IntStream.range(0, numUids).limit(limit), uids, authorBuffers, count,
+                failedUids);
+        final long time = System.nanoTime() - start;
+        System.out.println(time / limit / 1e9);
+        while (failedUids.size() > 0) {
+            final Integer[] failedUidsCopy = failedUids.toArray(new Integer[failedUids.size()]);
+            failedUids.clear();
+            tryFindAuthors(Stream.of(failedUidsCopy).mapToInt(Integer::intValue), uids,
+                    authorBuffers, count, failedUids);
         }
-        serializeAuthors(malloc(AUTHOR_CACHE, length));
+        int length = numUids + 1 << 1;
+        final int[] offsets = new int[numUids];
+        for (int i = 0; i < numUids; i++) {
+            offsets[i] = length;
+            length += authorBuffers[i].capacity();
+        }
+        final ByteBuffer out = malloc(AUTHOR_CACHE, length);
+        final IntBuffer intOut = out.asIntBuffer();
+        intOut.put(numUids);
+        intOut.put(offsets);
+        for (final ByteBuffer buffer : authorBuffers) {
+            out.put(buffer);
+        }
+        System.out.println("done");
+        out.rewind();
+        deserializeAuthors(out);
+    }
+    
+    private void deserializeAuthors(final ByteBuffer in) {
+        if (in.capacity() == 0) {
+            authors = new LitAuthor[0];
+            return;
+        }
+        final int numAuthors = in.getInt();
+        in.position(in.position() + numAuthors * Integer.BYTES);
+        authors = new LitAuthor[numAuthors];
+        for (int i = 0; i < numAuthors; i++) {
+            authors[i] = new LitAuthor(in);
+        }
     }
     
     public void deserializeAuthors() throws IOException {
-        System.out.println("deserializing authors");
-        deserialize(this::deserializeAuthors, AUTHOR_CACHE);
-        System.out.println("deserialized authors");
+        deserializeAuthors(mallocWholeFile(AUTHOR_CACHE));
+    }
+    
+    private LitAuthor deserializeAuthor(final ByteBuffer in, final int uid) {
+        in.rewind();
+        final int offsetOffset = (1 + uidIndices[uid]) * Integer.BYTES;
+        final int offset = in.getInt(offsetOffset);
+        in.position(offset);
+        return new LitAuthor(in);
+    }
+    
+    private static interface IORunnable {
+        
+        public void run() throws IOException;
+        
+    }
+    
+    private void findAll(final Path path, final IORunnable deserializer,
+            final IORunnable serializer) {
+        if (Files.exists(path)) {
+            try {
+                deserializer.run();
+                return;
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            serializer.run();
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public void findAllUids() {
+        if (foundUids == true) {
+            return;
+        }
+        findAll(UID_CACHE, this::deserializeUids, this::serializeUids);
+    }
+    
+    private void findAllAuthors() throws IOException {
+        findAllUids();
+        findAll(AUTHOR_CACHE, this::deserializeAuthors, this::serializeAuthors);
+    }
+    
+    private void ensureAllAuthorsFound() throws IOException {
+        if (authors == null) {
+            findAllAuthors();
+        }
+    }
+    
+    public LitAuthor[] allAuthors() throws IOException {
+        ensureAllAuthorsFound();
+        return authors;
+    }
+    
+    public Stream<LitAuthor> authorStream() throws IOException {
+        return Stream.of(allAuthors());
+    }
+    
+    public Stream<LitStory> storyStream() throws IOException {
+        return authorStream().flatMap(LitAuthor::storyStream);
     }
     
     public static void main(final String[] args) throws IOException {
+        final int numThreads = 1;//300;
+        final String numThreadsProperty = "java.util.concurrent.ForkJoinPool.common.parallelism";
+        final String oldNumThreads = System.getProperty(numThreadsProperty);
+        final String newNumThreads = String.valueOf(numThreads);
+        System.setProperty(numThreadsProperty, newNumThreads);
+        AUTHOR_CACHE.toFile().delete();
         final AllLitAuthorSearch search = new AllLitAuthorSearch();
-        //        search.findAllUids();
-        //        System.out.println("# uids: " + search.uids.size());
-        //        search.serializeUids();
-        //        final AllLitAuthorSearch newSearch = new AllLitAuthorSearch();
-        //        newSearch.deserializeUids();
-        //        System.out.println(newSearch.uids.equals(search.uids));
-        //search.allAuthors();
-        search.deserializeAuthors();
-        search.authors.forEach(System.out::println);
+        search.authorStream().forEach(System.out::println);
+        //search.findAllUids();
     }
     
 }

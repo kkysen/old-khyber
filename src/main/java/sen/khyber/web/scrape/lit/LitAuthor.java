@@ -10,6 +10,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -24,16 +25,20 @@ public class LitAuthor implements Iterable<LitStory>, Comparable<LitAuthor> {
     private static final String BASE_URL = Lit.Url.AUTHOR.getUrl();
     
     private final @Getter String name;
-    private final @Getter String href;
+    private final @Getter String url;
     private final @Getter int uid;
     private final @Getter int numStories;
     private final @Getter double averageRating;
     
     private final @Getter List<LitStory> stories;
     
+    public Stream<LitStory> storyStream() {
+        return stories.stream();
+    }
+    
     private LitAuthor(final int uid, final String url) throws IOException {
         this.uid = uid;
-        href = url;
+        this.url = url;
         
         final Document doc = Internet.getDocument(url);
         
@@ -56,18 +61,13 @@ public class LitAuthor implements Iterable<LitStory>, Comparable<LitAuthor> {
         storyElems.addAll(seriesStories);
         storyElems.addAll(loneStories);
         stories = new ArrayList<>(storyElems.size());
-        int numSkipped = 0; // skipped if some error with the story
         int totalRating = 0;
         for (final Element storyElem : storyElems) {
-            try {
-                final LitStory story = new LitStory(storyElem, this);
-                totalRating += story.getRating();
-                stories.add(story);
-            } catch (final IndexOutOfBoundsException e) {
-                numSkipped++;
-            }
+            final LitStory story = new LitStory(storyElem, this);
+            totalRating += story.getRating();
+            stories.add(story);
         }
-        numStories = stories.size() + numSkipped;
+        numStories = stories.size();
         if (numStories == 0) { // div by 0
             averageRating = 0;
         } else {
@@ -95,23 +95,21 @@ public class LitAuthor implements Iterable<LitStory>, Comparable<LitAuthor> {
     
     public LitAuthor(final ByteBuffer in) {
         uid = in.getInt();
-        href = uidToUrl(uid);
-        numStories = in.getShort();
+        url = uidToUrl(uid);
         averageRating = in.getFloat();
         name = in.getShortString();
-        final int numActualStories = in.getShort();
-        stories = new ArrayList<>(numActualStories);
-        for (int i = 0; i < numActualStories; i++) {
+        numStories = in.getShort();
+        stories = new ArrayList<>(numStories);
+        for (int i = 0; i < numStories; i++) {
             stories.add(new LitStory(in, this));
         }
     }
     
     private static final int BASE_SERIALIZED_LENGTH = 0
             + Integer.BYTES // uid
-            + Short.BYTES // numStories
             + Float.BYTES // averageRating
             + Short.BYTES // name length
-            + Short.BYTES; // stories.size()
+            + Short.BYTES; // numStories
     
     private byte[] nameBytes;
     
@@ -126,10 +124,9 @@ public class LitAuthor implements Iterable<LitStory>, Comparable<LitAuthor> {
     
     public void serialize(final ByteBuffer out) {
         out.putInt(uid);
-        out.putShort((short) numStories);
         out.putFloat((float) averageRating);
         out.putShortBytes(nameBytes);
-        out.putShort((short) stories.size());
+        out.putShort((short) numStories); // or maybe stories.size()
         for (final LitStory story : stories) {
             story.serialize(out);
         }
@@ -146,7 +143,7 @@ public class LitAuthor implements Iterable<LitStory>, Comparable<LitAuthor> {
     
     @Override
     public String toString() {
-        return "LitAuthor [name=" + name + ", href=" + href + "]";
+        return "LitAuthor [name=" + name + ", href=" + url + "]";
     }
     
     @Override

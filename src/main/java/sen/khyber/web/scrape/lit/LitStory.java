@@ -44,14 +44,14 @@ public class LitStory implements Iterable<Document> {
     private final @Getter LitAuthor author;
     private final @Getter String authorName;
     private final @Getter String title;
-    private final String href;
+    private final String url;
     private final @Getter String description;
     private final @Getter Category category;
     private final @Getter LocalDate date;
     private final @Getter double rating;
     
     public String getHref() {
-        return URL + href;
+        return URL + url;
     }
     
     public String getDateString() {
@@ -73,7 +73,7 @@ public class LitStory implements Iterable<Document> {
         title = titleElem.text();
         final String fullHref = titleElem.attr("href");
         final int startIndex = fullHref.lastIndexOf('/') + 1;
-        href = fullHref.substring(startIndex, fullHref.length());
+        url = fullHref.substring(startIndex, fullHref.length());
         
         final String ratingEtc = titleAndRatingElem.ownText();
         final String ratingString = ratingEtc.substring(ratingEtc.length() - 5,
@@ -87,7 +87,7 @@ public class LitStory implements Iterable<Document> {
         final Element categoryElem = rowData.get(2).child(0);
         final String categoryHref = categoryElem.attr("href");
         System.out.println(categoryHref);
-        category = Category.valueOf(categoryHref);
+        category = Category.fromUrl(categoryHref);
         if (category == null) {
             System.out.println(this);
         }
@@ -100,17 +100,17 @@ public class LitStory implements Iterable<Document> {
         this.author = author;
         authorName = author.getName();
         
-        rating = in.getFloat();
+        category = Category.fromId(in.get());
         
-        category = Category.valueOf(in.get());
-        
-        final int year = in.getShort();
+        final int year = 2000 + in.get();
         final int month = in.get();
         final int day = in.get();
         date = LocalDate.of(year, month, day);
         
+        rating = in.getFloat();
+        
+        url = in.getShortString();
         title = in.getShortString();
-        href = in.getShortString();
         description = in.getShortString();
     }
     
@@ -130,7 +130,7 @@ public class LitStory implements Iterable<Document> {
     public int serializedLength() {
         titleBytes = title.getBytes();
         descriptionBytes = description.getBytes();
-        return BASE_SERIALIZED_LENGTH + titleBytes.length + href.length() + descriptionBytes.length;
+        return BASE_SERIALIZED_LENGTH + titleBytes.length + url.length() + descriptionBytes.length;
     }
     
     public void serialize(final ByteBuffer out) {
@@ -146,11 +146,11 @@ public class LitStory implements Iterable<Document> {
         out.put((byte) date.getDayOfMonth());
         
         out.putShortBytes(titleBytes);
-        out.putShortString(href);
+        out.putShortString(url);
         out.putShortBytes(descriptionBytes);
         
         final int titleLength = title.length();
-        final int hrefLength = href.length();
+        final int hrefLength = url.length();
         final int descriptionLength = description.length();
         final int end = out.position();
         final int length = serializedLength();
@@ -250,7 +250,7 @@ public class LitStory implements Iterable<Document> {
     }
     
     private Document getFirstPage() throws IOException {
-        return Internet.getDocument(href);
+        return Internet.getDocument(url);
     }
     
     private int calcNumPages() throws IOException {
@@ -415,7 +415,7 @@ public class LitStory implements Iterable<Document> {
     
     @Override
     public int hashCode() {
-        return href.hashCode();
+        return url.hashCode();
     }
     
     @Override
@@ -430,12 +430,12 @@ public class LitStory implements Iterable<Document> {
             return false;
         }
         final LitStory other = (LitStory) obj;
-        return href.equals(other.href);
+        return url.equals(other.url);
     }
     
     @Override
     public String toString() {
-        String ret = "LitStory [title=" + title + ", href=" + href + ", authorName=" + authorName
+        String ret = "LitStory [title=" + title + ", href=" + url + ", authorName=" + authorName
                 + ", description=" + description + ", category=" + category + ", date=" + date
                 + ", rating=" + rating;
         if (numPages != 0) {

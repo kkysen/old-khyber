@@ -5,7 +5,9 @@ package sen.khyber.util;
  * 
  * @author Khyber Sen
  */
-public class StringUtils {
+public final class StringUtils {
+    
+    private StringUtils() {}
     
     private static char unicodeQuoteToAscii(final char c) {
         if (c == 8217) {

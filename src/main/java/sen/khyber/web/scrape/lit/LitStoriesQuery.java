@@ -169,7 +169,7 @@ public interface LitStoriesQuery extends Query<LitStory>, BaseQuery<LitStory, Li
         query.parallel()
                 .byAuthor("author")
                 .afterDate(LocalDate.of(2017, 3, 18))
-                .inCategory(Category.valueOf(0))
+                .inCategory(Category.fromId(0))
                 .ratedAbove(4)
                 .limit(100)
                 .longerThan(10)
