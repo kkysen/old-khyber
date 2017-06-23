@@ -90,6 +90,7 @@ public class Misc {
         final MappedByteBuffer in = channel.map(MapMode.READ_ONLY, 0, length);
         file.close();
         System.out.println(in.getClass());
+        System.in.read();
     }
     
 }
