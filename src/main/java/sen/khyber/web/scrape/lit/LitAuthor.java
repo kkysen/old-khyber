@@ -19,6 +19,11 @@ import org.jsoup.select.Elements;
 import lombok.Getter;
 import lombok.experimental.ExtensionMethod;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 @ExtensionMethod(ByteBufferUtils.class)
 public class LitAuthor implements Iterable<LitStory>, Comparable<LitAuthor> {
     

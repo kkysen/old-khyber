@@ -30,6 +30,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.ExtensionMethod;
 
+/**
+ * 
+ * 
+ * @author Khyber Sen
+ */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @ExtensionMethod(ByteBufferUtils.class)
 public class LitStory implements Iterable<Document> {
